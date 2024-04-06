@@ -52,19 +52,22 @@ window.onload = function() {
   
     const handleClick = async (event) => {
         console.log('%cbutton pressed', 'color: green; font-weight: bold;');
-        event.preventDefault();
+        // event.preventDefault();
         initialConfetti();
         await randomConfetti();
-        event.target.removeEventListener('click', handleClick);
-        event.target.click(); // perform default button action
-        event.target.addEventListener('click', handleClick);
+        // event.removeEventListener('click', handleClick);
+        // event.target.click(); // perform default button action
+        // event.addEventListener('click', handleClick);
     };
   
     const attachClickListener = function() {
         // const submitButtons = document.querySelectorAll('input[type="submit"], button[type="submit"], button[data-v-625658]');
         const submitButtons = document.querySelectorAll('input[type="submit"], button[type="submit"], .text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150');
         submitButtons.forEach(function (submitButton) {
-            submitButton.addEventListener('click', handleClick);
+            if (!submitButton.hasClickListener) {
+                submitButton.addEventListener('click', handleClick);
+                submitButton.hasClickListener = true;
+            }
         });
     };
   
@@ -89,7 +92,3 @@ window.onload = function() {
 
 // Use chrome.storage API instead of localStorage
 // chrome.storage.sync.set({ userName: nameField.value });
-
-
-// data-v-625658
-// class="text-white bg-primary-dark hover:bg-primary-alt p-px font-metro focus:outline-none transition-colors duration-150"
