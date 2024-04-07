@@ -62,7 +62,7 @@ window.onload = function() {
   
     const attachClickListener = function() {
         // const submitButtons = document.querySelectorAll('input[type="submit"], button[type="submit"], button[data-v-625658]');
-        const submitButtons = document.querySelectorAll('input[type="submit"], button[type="submit"], .text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150');
+        const submitButtons = document.querySelectorAll('[data-v-625658].text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150');
         submitButtons.forEach(function (submitButton) {
             if (!submitButton.hasClickListener) {
                 submitButton.addEventListener('click', handleClick);
@@ -92,3 +92,6 @@ window.onload = function() {
 
 // Use chrome.storage API instead of localStorage
 // chrome.storage.sync.set({ userName: nameField.value });
+
+// data-v-625658
+// data-v--363100

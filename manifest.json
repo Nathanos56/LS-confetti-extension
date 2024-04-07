@@ -1,13 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "Confetti",
-  "version": "1.2",
+  "name": "Learning Suite Confetti",
+  "version": "1.4",
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["https://learningsuite.byu.edu/*"],
       "js": ["dist/confetti.bundle.js"]
     }
-  ],
-  "permissions": ["activeTab", "storage", "scripting"],
-  "host_permissions": ["<all_urls>"]
+  ]
 }
