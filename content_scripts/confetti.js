@@ -48,21 +48,32 @@ function randomConfetti() {
 }
 
 window.onload = function() {
-    console.log('%cinside dom event listener', 'color: green; font-weight: bold;');
+    // console.log('%cinside dom event listener', 'color: green; font-weight: bold;');
+    const LSSubmit = '[data-v-625658].text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
+    const LSCheckOff = '[data-v--363100].float-right.ml-2.w-28.text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
+    let checkOffEnabled = false;
+    chrome.storage.local.get('checkOffEnabled', function(result) {
+        if(result.yourVariable === true) {
+            checkOffEnabled = true;
+        }
+    });
   
     const handleClick = async (event) => {
-        console.log('%cbutton pressed', 'color: green; font-weight: bold;');
-        // event.preventDefault();
+        // console.log('%cbutton pressed', 'color: green; font-weight: bold;');
         initialConfetti();
         await randomConfetti();
-        // event.removeEventListener('click', handleClick);
-        // event.target.click(); // perform default button action
-        // event.addEventListener('click', handleClick);
     };
   
     const attachClickListener = function() {
-        // const submitButtons = document.querySelectorAll('input[type="submit"], button[type="submit"], button[data-v-625658]');
-        const submitButtons = document.querySelectorAll('[data-v-625658].text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150');
+        const submitButtons = document.querySelectorAll(LSSubmit);
+        if (checkOffEnabled) { 
+            let buttons = document.querySelectorAll(LSCheckOff);
+            let checkOffButtons = Array.from(buttons).filter(button => {
+                let childDivs = button.querySelectorAll('div');
+                return Array.from(childDivs).some(div => div.textContent.includes('Check Off'));
+            });
+            submitButtons.push(checkOffButtons);
+        }
         submitButtons.forEach(function (submitButton) {
             if (!submitButton.hasClickListener) {
                 submitButton.addEventListener('click', handleClick);
@@ -83,15 +94,19 @@ window.onload = function() {
   
     observer.observe(document.body, { childList: true, subtree: true });
   
-    console.log('%cjs file loaded', 'color: green; font-weight: bold;');
+    // console.log('%cjs file loaded', 'color: green; font-weight: bold;');
 };
 
 
 
 
 
-// Use chrome.storage API instead of localStorage
-// chrome.storage.sync.set({ userName: nameField.value });
+// was a test for submit buttons on all websites:
+// const submitButtons = document.querySelectorAll('input[type="submit"], button[type="submit"], button[data-v-625658]');
+// event.preventDefault();
+// event.removeEventListener('click', handleClick);
+// event.target.click(); // perform default button action
+// event.addEventListener('click', handleClick);
 
-// data-v-625658
-// data-v--363100
+
+
