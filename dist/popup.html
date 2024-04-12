@@ -5,25 +5,43 @@
 </head>
 <body>
     <header>
-        <img id="logo" src="images/icon16.png" style="width: 16px; height: 16px;" />
-        <h1>Learning Suite Confetti</h1>
+        <!-- Image is not working -->
+        <!-- <img id="logo" src="images/icon16.png" style="width: 16px; height: 16px;" /> -->
         <h2>Learning Suite Confetti</h2>
-        <h3>Learning Suite Confetti</h3>
-        <h4>Learning Suite Confetti</h4>
     </header>
     <main>
-        <button id="option1">Option 1</button>
-        <button id="option2">Option 2</button>
-        <button id="option3">Option 3</button>
-        <label class="switch">
-            <input type="checkbox">
-            <span class="slider round"></span>
-        </label>
+        <!-- <h3>Options</h> -->
+        <!-- <button id="option1">Option 1</button> -->
+        <div class="switch-group" style="display: flex; flex-direction: row;">
+            <h3>Enable "Check Off" Confetti</h3>
+            &nbsp; &nbsp; &nbsp;
+            <label class="switch">
+                <input type="checkbox" id="checkOffSwitch">
+                <span class="slider round"></span>
+            </label>
+        </div>
+        <div class="switch-group" style="display: flex; flex-direction: row;">
+            <h3>Enable Confetti Shortcut</h3>
+            &nbsp; &nbsp; &nbsp;
+            <label class="switch">
+                <input type="checkbox" id="shortcutSwitch">
+                <span class="slider round"></span>
+            </label>
+        </div>
+        <div class="switch-group" style="display: flex; flex-direction: row;">
+            <h3>Enable Custom Confetti</h3>
+            &nbsp; &nbsp; &nbsp;
+            <label class="switch">
+                <input type="checkbox" id="customConfettiSwitch">
+                <span class="slider round"></span>
+            </label>
+        </div>
     </main>
     <footer>
-        <h3>Project by Nathaniel Wilson - <a href="https://github.com/nthnlwilson/LS-confetti-extension">GitHub</a></h3>
-        <h3>Confetti icon by Jemis Mali - <a href="https://github.com/nthnlwilson/LS-confetti-extension">IconScout</a></h3>
-        <h4>Powered by Canvas-confetti - <a href="https://github.com/nthnlwilson/LS-confetti-extension">GitHub</a></h4>
+        <h3>The code is available on my <a href="https://github.com/nthnlwilson/LS-confetti-extension">GitHub</a>. Figure out how it works, fork it, make it better.</h3>
+        <h4>Author: Nathaniel Wilson</h4>
+        <h4>Powered by <a href="https://github.com/nthnlwilson/LS-confetti-extension">Canvas-Confetti</a></h4>
+        <h4><a href="https://github.com/nthnlwilson/LS-confetti-extension">Icons</a></h4>
     </footer>
   
 

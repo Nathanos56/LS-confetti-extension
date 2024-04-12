@@ -52,10 +52,11 @@ window.onload = function() {
     const LSSubmit = '[data-v-625658].text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
     const LSCheckOff = '[data-v--363100].float-right.ml-2.w-28.text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
     let checkOffEnabled = false;
-    chrome.storage.local.get('checkOffEnabled', function(result) {
-        if(result.yourVariable === true) {
-            checkOffEnabled = true;
-        }
+    chrome.storage.sync.get('checkOffEnabled')
+    .then(result => {
+        checkOffEnabled = result.checkOffEnabled || false; // Set default to false if not found
+        console.log('Check Off Enabled: ', checkOffEnabled);
+        attachClickListener(); //initial attach
     });
   
     const handleClick = async (event) => {
@@ -65,14 +66,14 @@ window.onload = function() {
     };
   
     const attachClickListener = function() {
-        const submitButtons = document.querySelectorAll(LSSubmit);
+        let submitButtons = Array.from(document.querySelectorAll(LSSubmit));
         if (checkOffEnabled) { 
             let buttons = document.querySelectorAll(LSCheckOff);
             let checkOffButtons = Array.from(buttons).filter(button => {
                 let childDivs = button.querySelectorAll('div');
                 return Array.from(childDivs).some(div => div.textContent.includes('Check Off'));
             });
-            submitButtons.push(checkOffButtons);
+            submitButtons = submitButtons.concat(checkOffButtons);
         }
         submitButtons.forEach(function (submitButton) {
             if (!submitButton.hasClickListener) {
@@ -82,17 +83,17 @@ window.onload = function() {
         });
     };
   
-    attachClickListener(); // Initial attach
+    // attachClickListener(); // Initial attach
   
     const observer = new MutationObserver((mutationsList, observer) => {
         for(let mutation of mutationsList) {
-            if (mutation.type === 'childList') {
+            if (mutation.type === 'childList' || mutation.type === 'attributes' || mutation.type === 'characterData') {
                 attachClickListener();
             }
         }
     });
   
-    observer.observe(document.body, { childList: true, subtree: true });
+    observer.observe(document.body, { childList: true, attributes: true, characterData: true, subtree: true });
   
     // console.log('%cjs file loaded', 'color: green; font-weight: bold;');
 };
@@ -101,7 +102,7 @@ window.onload = function() {
 
 
 
-// was a test for submit buttons on all websites:
+// this was a test for submit buttons on all websites:
 // const submitButtons = document.querySelectorAll('input[type="submit"], button[type="submit"], button[data-v-625658]');
 // event.preventDefault();
 // event.removeEventListener('click', handleClick);

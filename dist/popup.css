@@ -21,6 +21,7 @@ html {
     width: 50px;
     height: 24px;
     --switch-width: 25px;
+    transform: translateY(50%);
 }
 
 /* Hide default HTML checkbox */
