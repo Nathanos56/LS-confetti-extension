@@ -8,13 +8,11 @@ checkOffSwitch.addEventListener('change', (event) => {
     chrome.storage.sync.set({checkOffEnabled: event.target.checked}, function() {
         console.log('Value is set to ' + event.target.checked);
     });
-
-    chrome.storage.sync.get('checkOffEnabled', function(result) {
-        if(result.checkOffEnabled === true) {
-            checkOffEnabled = true;
-        }
-        console.log('Check Off Enabled: ', result.checkOffEnabled);
-    });
 });
 
-let checkOffEnabled = false;
+chrome.storage.sync.get('checkOffEnabled').then(result => {
+    let checkOffEnabled = result.checkOffEnabled || false; // default is false
+    if (checkOffSwitch) {
+        checkOffSwitch.checked = checkOffEnabled;
+    }
+});

@@ -52,8 +52,7 @@ window.onload = function() {
     const LSSubmit = '[data-v-625658].text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
     const LSCheckOff = '[data-v--363100].float-right.ml-2.w-28.text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
     let checkOffEnabled = false;
-    chrome.storage.sync.get('checkOffEnabled')
-    .then(result => {
+    chrome.storage.sync.get('checkOffEnabled').then(result => {
         checkOffEnabled = result.checkOffEnabled || false; // Set default to false if not found
         console.log('Check Off Enabled: ', checkOffEnabled);
         attachClickListener(); //initial attach
@@ -82,8 +81,6 @@ window.onload = function() {
             }
         });
     };
-  
-    // attachClickListener(); // Initial attach
   
     const observer = new MutationObserver((mutationsList, observer) => {
         for(let mutation of mutationsList) {
