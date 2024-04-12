@@ -1,4 +1,5 @@
 const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './content_scripts/confetti.js',
@@ -19,5 +20,15 @@ module.exports = {
         }
       }
     ]
-  }
+  },
+  plugins: [
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'images', to: 'images' }, // copies all images from `src/images` to `dist/images`
+        { from: 'content_scripts/popup.html', to: '.' },  // copies `popup.html` to `dist`
+        { from: 'content_scripts/popup.js', to: '.' },     // copies `popup.js` to `dist`
+        { from: 'content_scripts/popup.css', to: '.' }     // copies `popup.css` to `dist`
+      ],
+    }),
+  ],
 };
