@@ -27,7 +27,8 @@ module.exports = {
         { from: 'images', to: 'images' }, // copies all images from `src/images` to `dist/images`
         { from: 'content_scripts/popup.html', to: '.' },  // copies `popup.html` to `dist`
         { from: 'content_scripts/popup.js', to: '.' },     // copies `popup.js` to `dist`
-        { from: 'content_scripts/popup.css', to: '.' }     // copies `popup.css` to `dist`
+        { from: 'content_scripts/popup.css', to: '.' },     // copies `popup.css` to `dist`
+        { from: 'node_modules/bootstrap', to: 'node_modules/bootstrap' }     // copies node `bootstrap` to `dist/node_modules/bootstrap`
       ],
     }),
   ],

@@ -105,6 +105,3 @@ window.onload = function() {
 // event.removeEventListener('click', handleClick);
 // event.target.click(); // perform default button action
 // event.addEventListener('click', handleClick);
-
-
-

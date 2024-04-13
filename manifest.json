@@ -15,7 +15,7 @@
   "content_scripts": [
     {
       "matches": ["https://learningsuite.byu.edu/*"],
-      "js": ["dist/confetti.bundle.js"]
+      "js": ["dist/confetti.bundle.js", "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"]
     }
   ]
 }
