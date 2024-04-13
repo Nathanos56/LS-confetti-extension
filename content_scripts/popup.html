@@ -26,47 +26,89 @@
         </div>
 
         <!-- sliders -->
-        <div class="ms-5 me-5 mt-1">
-            <label for="customRange3" class="form-label">Particle Count</label>
-            <input type="range" class="form-range" min="10" max="500" step="10" id="customRange3">
-        </div>
-        <div class="ms-5 me-5">
-            <label for="customRange3" class="form-label">Angle</label>
-            <input type="range" class="form-range" min="0" max="180" step="10" id="customRange3">
-        </div>
-        <div class="ms-5 me-5">
-            <label for="customRange3" class="form-label">Spread</label>
-            <input type="range" class="form-range" min="10" max="360" step="10" id="customRange3">
-        </div>
-        <div class="ms-5 me-5">
-            <label for="customRange3" class="form-label">Initial Velocity</label>
-            <input type="range" class="form-range" min="10" max="100" step="10" id="customRange3">
-        </div>
-        <div class="ms-5 me-5">
-            <label for="customRange3" class="form-label">Decay</label>
-            <input type="range" class="form-range" min=".4" max="2" step=".2" id="customRange3">
-        </div>
-        <div class="ms-5 me-5">
-            <label for="customRange3" class="form-label">Gravity</label>
-            <input type="range" class="form-range" min=".2" max="5" step=".2" id="customRange3">
+        <div class="ms-5 me-5 mt-2">
+            <div>
+                <label for="particleSlider" class="form-label">Particle Count</label>
+                <label style="float: right;" id="particleSliderValue"></label>
+            </div>
+            <input type="range" class="form-range" min="10" max="500" step="10" id="particleSlider">
         </div>
         <!-- <div class="ms-5 me-5">
-            <label for="customRange3" class="form-label">Drift</label>
-            <input type="range" class="form-range" min="10" max="500" step="10" id="customRange3">
+            <div>
+                <label for="angleSlider" class="form-label">Angle</label>
+                <label style="float: right;" id="angleSliderValue"></label>
+            </div>
+            <input type="range" class="form-range" min="0" max="180" step="10" id="angleSlider">
+        </div> -->
+        <div class="ms-5 me-5">
+            <div>
+                <label for="spreadSlider" class="form-label">Spread</label>
+                <label style="float: right;" id="spreadSliderValue"></label>
+            </div>
+            <input type="range" class="form-range" min="10" max="360" step="10" id="spreadSlider">
+        </div>
+        <div class="ms-5 me-5">
+            <div>
+                <label for="velocitySlider" class="form-label">Initial Velocity</label>
+                <label style="float: right;" id="velocitySliderValue"></label>
+            </div>
+            <input type="range" class="form-range" min="10" max="100" step="10" id="velocitySlider">
+        </div>
+        <div class="ms-5 me-5">
+            <div>
+                <label for="decaySlider" class="form-label">Decay</label>
+                <label style="float: right;" id="decaySliderValue"></label>
+            </div>
+            <input type="range" class="form-range" min=".4" max="2" step=".2" id="decaySlider">
+        </div>
+        <div class="ms-5 me-5">
+            <div>
+                <label for="gravitySlider" class="form-label">Gravity</label>
+                <label style="float: right;" id="gravitySliderValue"></label>
+            </div>
+            <input type="range" class="form-range" min=".2" max="5" step=".2" id="gravitySlider">
+        </div>
+        <!-- <div class="ms-5 me-5">
+            <div>
+                <label for="driftSlider" class="form-label">Drift</label>
+                <label style="float: right;" id="driftSliderValue"></label>
+            </div>
+            <input type="range" class="form-range" min="10" max="500" step="10" id="driftSlider">
         </div> -->
         <!-- <div class="ms-5 me-5">
-            <label for="customRange3" class="form-label">Ticks</label>
-            <input type="range" class="form-range" min="10" max="500" step="10" id="customRange3">
+            <div>
+                <label for="tickSlider" class="form-label">Ticks</label>
+                <label style="float: right;" id="tickSliderValue"></label>
+            </div>
+            <input type="range" class="form-range" min="10" max="500" step="10" id="tickSlider">
         </div> -->
         <div class="ms-5 me-5">
-            <label for="customRange3" class="form-label">Particle Size</label>
-            <input type="range" class="form-range" min=".2" max="10" step=".2" id="customRange3">
+            <div>
+                <label for="particleSizeSlider" class="form-label">Particle Size</label>
+                <label style="float: right;" id="particleSizeSliderValue"></label>
+            </div>
+            <input type="range" class="form-range" min=".2" max="10" step=".2" id="particleSizeSlider">
         </div>
         <div class="ms-5 me-5">
-            <label for="customRange3" class="form-label">Random Bursts</label>
-            <input type="range" class="form-range" min="0" max="10" step="1" id="customRange3">
+            <div>
+                <label for="burstSlider" class="form-label">Random Bursts</label>
+                <label style="float: right;" id="burstSliderValue"></label>
+            </div>
+            <input type="range" class="form-range" min="0" max="10" step="1" id="burstSlider">
         </div>
+
         <!-- Colors -->
+        <div class="ms-5 me-5">
+            <form>
+              <label for="myColor" class="form-label">Confetti Colors</label>
+              <div class="d-flex justify-content-between ms-4 me-4">
+                <input type="color" class="form-control form-control-color" id="color1" value="#CCCCCC">
+                <input type="color" class="form-control form-control-color" id="color2" value="#CCCCCC">
+                <input type="color" class="form-control form-control-color" id="color3" value="#CCCCCC">
+              </div>
+            </form>
+        </div>
+
         <div class="text-center mt-5">Refresh the page to see changes</div>
     </main>
     <footer class="fixed-bottom d-flex justify-content-center align-items-center shadow text-secondary mt-auto border-top">

@@ -4,8 +4,8 @@ button {
 }
 
 html {
-    width: 350px; /* max: 800px */
-    height: 500px; /* max: 600px more than this will cause a scrollbar */ 
+    width: 450px; /* max: 800px */
+    height: 600px; /* max: 600px more than this will cause a scrollbar */ 
 }
 
 

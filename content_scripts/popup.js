@@ -10,9 +10,15 @@ checkOffSwitch.addEventListener('change', (event) => {
     });
 });
 
-chrome.storage.sync.get('checkOffEnabled').then(result => {
-    let checkOffEnabled = result.checkOffEnabled || false; // default is false
-    if (checkOffSwitch) {
-        checkOffSwitch.checked = checkOffEnabled;
-    }
-});
+
+// real time range sliders
+window.onload = function() {
+    var sliders = document.querySelectorAll('.form-range');
+    sliders.forEach(function(slider) {
+        var label = document.getElementById(slider.id + 'Value');
+        slider.oninput = function() {
+            label.textContent = this.value;
+        }
+        slider.dispatchEvent(new Event('input'));
+    });
+}
