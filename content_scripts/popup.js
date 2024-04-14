@@ -16,8 +16,9 @@ checkOffSwitch.addEventListener('change', (event) => {
     });
 });
 
-// real time range sliders
+
 window.onload = function() {
+    // real time range sliders
     var sliders = document.querySelectorAll('.form-range');
     sliders.forEach(function(slider) {
         var label = document.getElementById(slider.id + 'Value');
@@ -34,6 +35,14 @@ window.onload = function() {
             mySwitch.checked = result[mySwitch.id] ? true : false;
         });
     });
+
+    // show slider states
+    var sliders = document.querySelectorAll('.form-range');
+    sliders.forEach(function(slider) {
+        chrome.storage.sync.get(slider.id, function(result) {
+            this.value = result;
+        });
+    });
 }
 
 // Save the state of all of the switches and sliders in storage
@@ -41,17 +50,16 @@ applyButton.addEventListener('click', (event) => {
     // switches
     var switches = document.querySelectorAll('[role="switch"]');
     switches.forEach(function(mySwitch) {
-        chrome.storage.sync.set(mySwitch.id, mySwitch.checked);
+        chrome.storage.sync.set({[mySwitch.id]: mySwitch.checked}, function() {
+            console.log(mySwitch.id + ' value is set to ' + mySwitch.checked);
+        });
     });
     // sliders
     var sliders = document.querySelectorAll('.form-range');
     sliders.forEach(function(slider) {
-        chrome.storage.sync.set(slider.id, document.getElementById(slider.id + 'Value').textContent);
+        var sliderValue = document.getElementById(slider.id + 'Value').textContent;
+        chrome.storage.sync.set({[slider.id]: sliderValue}, function() {
+            console.log(slider.id + ' value is set to ' + sliderValue);
+        });
     });
 });
-
-
-// apply button
-// chrome.storage.sync.set({label: this.value}, function() {
-//     console.log('Value is set to ' + this.value);
-// });
