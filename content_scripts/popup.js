@@ -22,3 +22,8 @@ window.onload = function() {
         slider.dispatchEvent(new Event('input'));
     });
 }
+
+// apply button
+// chrome.storage.sync.set({label: this.value}, function() {
+//     console.log('Value is set to ' + this.value);
+// });
