@@ -9,12 +9,12 @@ const testButton = document.getElementById('testButton');
 const resetButton = document.getElementById('resetButton');
 
 // Listen for switch toggle
-checkOffSwitch.addEventListener('change', (event) => {
-    // Save the state of the switch in storage
-    chrome.storage.sync.set({checkOffEnabled: event.target.checked}, function() {
-        console.log('Value is set to ' + event.target.checked);
-    });
-});
+// checkOffSwitch.addEventListener('change', (event) => {
+//     // Save the state of the switch in storage
+//     chrome.storage.sync.set({checkOffEnabled: event.target.checked}, function() {
+//         console.log('Value is set to ' + event.target.checked);
+//     });
+// });
 
 
 window.onload = function() {
@@ -31,16 +31,17 @@ window.onload = function() {
     // show switch states
     var switches = document.querySelectorAll('[role="switch"]');
     switches.forEach(function(mySwitch) {
-        chrome.storage.sync.get(mySwitch.id, function(result) {
-            mySwitch.checked = result[mySwitch.id] ? true : false;
+        chrome.storage.sync.get(mySwitch.id).then(result => {
+            mySwitch.checked = result[mySwitch.id] || false; // Set default to false if not found
         });
     });
-
+    
     // show slider states
     var sliders = document.querySelectorAll('.form-range');
     sliders.forEach(function(slider) {
-        chrome.storage.sync.get(slider.id, function(result) {
-            this.value = result;
+        chrome.storage.sync.get(slider.id).then(result => {
+            slider.value = result[slider.id] || 0; // Set default to false if not found
+            slider.dispatchEvent(new Event('input')); // Trigger the input event to update the label
         });
     });
 }
@@ -63,3 +64,11 @@ applyButton.addEventListener('click', (event) => {
         });
     });
 });
+
+
+// function enableSliders(isChecked) {
+//     var sliders = document.getElementsByClassName('form-range');
+//     for (var i = 0; i < sliders.length; i++) {
+//         sliders[i].disabled = !isChecked;
+//     }
+// }
