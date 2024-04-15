@@ -8,14 +8,6 @@ const applyButton = document.getElementById('applyButton');
 const testButton = document.getElementById('testButton');
 const resetButton = document.getElementById('resetButton');
 
-// Listen for switch toggle
-// checkOffSwitch.addEventListener('change', (event) => {
-//     // Save the state of the switch in storage
-//     chrome.storage.sync.set({checkOffEnabled: event.target.checked}, function() {
-//         console.log('Value is set to ' + event.target.checked);
-//     });
-// });
-
 
 window.onload = function() {
     // real time range sliders
@@ -65,6 +57,8 @@ applyButton.addEventListener('click', (event) => {
     });
 });
 
+
+// show when sliders are disabled
 
 // function enableSliders(isChecked) {
 //     var sliders = document.getElementsByClassName('form-range');

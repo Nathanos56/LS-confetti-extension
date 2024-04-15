@@ -1,28 +1,28 @@
 import confetti from 'canvas-confetti';
 
-function initialConfetti() {
+function initialConfetti(MyparticleCount, angle, spread, velocity, decay, gravity, drift, ticks, size) {
     // Default values are commented
     const testConfettiSettings = {
-        particleCount: 150,  // 50
-        angle: 90,           // 90
-        spread: 270,         // 45
-        startVelocity: 45,   // 45
-        decay: 0.9,          // .9
-        gravity: 1,          // 1
-        drift: 0,            // 0
-        flat: false,         // false
-        ticks: 200,          // 200   how many times the confetti will move
+        particleCount: MyparticleCount,  // 50
+        angle: angle,              // 90
+        spread: spread,            // 45
+        startVelocity: velocity,   // 45
+        decay: decay,              // .9
+        gravity: gravity,          // 1
+        drift: drift,              // 0
+        flat: false,               // false
+        ticks: ticks,              // 200   how many times the confetti will move
         //origin: object,
-        scalar: 1,           // 1      size of particles
+        scalar: size,              // 1      size of particles
         colors: ['#f00', '#00f', '#0f0'], // Adjust the confetti colors
     };
     confetti(testConfettiSettings);
 }
 
-function randomConfetti() {
+function randomConfetti(burstNum) {
     return new Promise((resolve) => {
         const interval = 200;
-        const numExplosions = 5;
+        const numExplosions = burstNum;
         let count = 0;
 
         let intervalId = setInterval(() => {
@@ -37,13 +37,21 @@ function randomConfetti() {
             scalar: .8,
             colors: ['#f00', '#00f', '#0f0'],
         });
-        count++;
+        ++count;
 
         if (count >= numExplosions) {
             clearInterval(intervalId);
             resolve();
         }
         }, interval);
+    });
+}
+
+function getStoredValue(id, predefined) {
+    return new Promise((resolve, reject) => {
+        chrome.storage.sync.get(id, (result) => {
+            resolve(result[id] || predefined); // Set to default if not found
+        });
     });
 }
 
@@ -57,11 +65,25 @@ window.onload = function() {
         console.log('Check Off Enabled: ', checkOffEnabled);
         attachClickListener(); //initial attach
     });
+    // let color1 = '#f00';
+    // let color2 = '#00f';
+    // let color3 = '#0f0';
+    
   
     const handleClick = async (event) => {
         // console.log('%cbutton pressed', 'color: green; font-weight: bold;');
-        initialConfetti();
-        await randomConfetti();
+        const particleCount = await getStoredValue('particleSlider', 150);
+        const angle = await getStoredValue('angleSlider', 90);
+        const spread = await getStoredValue('spreadSlider', 270);
+        const velocity = await getStoredValue('velocitySlider', 45);
+        const decay = await getStoredValue('decaySlider', 0.9);
+        const gravity = await getStoredValue('gravitySlider', 1);
+        const drift = await getStoredValue('driftSlider', 0);
+        const ticks = await getStoredValue('tickSlider', 200);
+        const size = await getStoredValue('particleSizeSlider', 1);
+        const burstNum = await getStoredValue('burstSlider', 5);
+        initialConfetti(particleCount, angle, spread, velocity, decay, gravity, drift, ticks, size);
+        await randomConfetti(burstNum);
     };
   
     const attachClickListener = function() {
