@@ -65,25 +65,37 @@ window.onload = function() {
         console.log('Check Off Enabled: ', checkOffEnabled);
         attachClickListener(); //initial attach
     });
-    // let color1 = '#f00';
-    // let color2 = '#00f';
-    // let color3 = '#0f0';
-    
   
     const handleClick = async (event) => {
         // console.log('%cbutton pressed', 'color: green; font-weight: bold;');
-        const particleCount = await getStoredValue('particleSlider', 150);
-        const angle = await getStoredValue('angleSlider', 90);
-        const spread = await getStoredValue('spreadSlider', 270);
-        const velocity = await getStoredValue('velocitySlider', 45);
-        const decay = await getStoredValue('decaySlider', 0.9);
-        const gravity = await getStoredValue('gravitySlider', 1);
-        const drift = await getStoredValue('driftSlider', 0);
-        const ticks = await getStoredValue('tickSlider', 200);
-        const size = await getStoredValue('particleSizeSlider', 1);
-        const burstNum = await getStoredValue('burstSlider', 5);
-        initialConfetti(particleCount, angle, spread, velocity, decay, gravity, drift, ticks, size);
-        await randomConfetti(burstNum);
+        chrome.storage.sync.get(['selectedProfile'], function(result) {
+            let profileName = result.selectedProfile;
+            
+            // Get the profiles object
+            chrome.storage.sync.get(['profiles'], function(result) {
+                let profiles = result.profiles;
+        
+                // Get the selected profile
+                let profileSettings = profiles[profileName];
+        
+                const particleCount = profileSettings['particleSlider'] || 150;
+                const angle = profileSettings['angleSlider'] || 90;
+                const spread = profileSettings['spreadSlider'] || 270;
+                const velocity = profileSettings['velocitySlider'] || 45;
+                const decay = profileSettings['decaySlider'] || 0.9;
+                const gravity = profileSettings['gravitySlider'] || 1;
+                const drift = profileSettings['driftSlider'] || 0;
+                const ticks = profileSettings['tickSlider'] || 200;
+                const size = profileSettings['particleSizeSlider'] || 1;
+                const burstNum = profileSettings['burstSlider'] || 5;
+                // let color1 = '#f00';
+                // let color2 = '#00f';
+                // let color3 = '#0f0';
+
+                initialConfetti(particleCount, angle, spread, velocity, decay, gravity, drift, ticks, size);
+                randomConfetti(burstNum);
+            });
+        });
     };
   
     const attachClickListener = function() {
