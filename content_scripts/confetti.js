@@ -1,6 +1,6 @@
 import confetti from 'canvas-confetti';
 
-function initialConfetti(MyparticleCount, angle, spread, velocity, decay, gravity, drift, ticks, size) {
+function initialConfetti(MyparticleCount, angle, spread, velocity, decay, gravity, drift, ticks, size, color1, color2, color3) {
     // Default values are commented
     const testConfettiSettings = {
         particleCount: MyparticleCount,  // 50
@@ -14,12 +14,12 @@ function initialConfetti(MyparticleCount, angle, spread, velocity, decay, gravit
         ticks: ticks,              // 200   how many times the confetti will move
         //origin: object,
         scalar: size,              // 1      size of particles
-        colors: ['#f00', '#00f', '#0f0'], // Adjust the confetti colors
+        colors: [color1, color2, color3], // Adjust the confetti colors
     };
     confetti(testConfettiSettings);
 }
 
-function randomConfetti(burstNum) {
+function randomConfetti(burstNum, color1, color2, color3) {
     return new Promise((resolve) => {
         const interval = 200;
         const numExplosions = burstNum;
@@ -35,7 +35,7 @@ function randomConfetti(burstNum) {
             y: Math.random() - 0.2
             },
             scalar: .8,
-            colors: ['#f00', '#00f', '#0f0'],
+            colors: [color1, color2, color3],
         });
         ++count;
 
@@ -47,13 +47,6 @@ function randomConfetti(burstNum) {
     });
 }
 
-function getStoredValue(id, predefined) {
-    return new Promise((resolve, reject) => {
-        chrome.storage.sync.get(id, (result) => {
-            resolve(result[id] || predefined); // Set to default if not found
-        });
-    });
-}
 
 window.onload = function() {
     // console.log('%cinside dom event listener', 'color: green; font-weight: bold;');
@@ -88,14 +81,12 @@ window.onload = function() {
                 const ticks = profileSettings['tickSlider'] || 200;
                 const size = profileSettings['particleSizeSlider'] || 1;
                 const burstNum = profileSettings['burstSlider'] || 5;
+                const color1 = profileSettings['colorSelector1'] || '#f00';
+                const color2 = profileSettings['colorSelector2'] || '#00f';
+                const color3 = profileSettings['colorSelector3'] || '#0f0';
 
-                // implement colors
-                // const color1 = profileSettings['colorSelector1'] || '#f00';
-                // const color2 = profileSettings['colorSelector2'] || '#00f';
-                // const color3 = profileSettings['colorSelector3'] || '#0f0';
-
-                initialConfetti(particleCount, angle, spread, velocity, decay, gravity, drift, ticks, size);
-                randomConfetti(burstNum);
+                initialConfetti(particleCount, angle, spread, velocity, decay, gravity, drift, ticks, size, color1, color2, color3);
+                randomConfetti(burstNum, color1, color2, color3);
             });
         });
     };

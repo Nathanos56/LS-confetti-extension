@@ -1,4 +1,3 @@
-// default json file
 const defaultVals = {
     "particleSlider": 150,
     "angleSlider": 90,
@@ -10,9 +9,9 @@ const defaultVals = {
     "tickSlider": 200,
     "particleSizeSlider": 1,
     "burstSlider": 5,
-    "colorSelector1": "#f00",
-    "colorSelector2": "#00f",
-    "colorSelector3": "#0f0"
+    "colorSelector1": "#ff0000",
+    "colorSelector2": "#0000ff",
+    "colorSelector3": "#00ff00"
 }
 
 // switches
@@ -61,7 +60,7 @@ window.onload = function() {
     colorInputs.forEach(function(colorInput) {
         chrome.storage.sync.get(colorInput.id).then(result => {
             // If not in chrome storage, use default value from JSON file, else set to gray
-            colorInput.value = result[colorInput.id] || defaultVals[colorInput.id] || '#CCCCCC';
+            colorInput.value = result[colorInput.id] || defaultVals[colorInput.id] || '#808080';
         });
     });
 }
@@ -94,7 +93,7 @@ applyButton.addEventListener('click', (event) => {
 });
 
 
-
+// profiles are so poeple can adjust the defaults and save their work
 var profiles = {}; // all profiles
 
 applyButton.addEventListener('click', (event) => {
