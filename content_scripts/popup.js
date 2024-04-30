@@ -21,12 +21,30 @@ const defaultVals = {
 
 // buttons
 const applyButton = document.getElementById('applyButton');
-const testButton = document.getElementById('testButton');
 const resetButton = document.getElementById('resetButton');
+// const testButton = document.getElementById('testButton'); 
+// can't use a test button without giving the extension access to every webpage
 
-
-// load stored options
 window.onload = function() {
+    // Get the selected profile name
+    chrome.storage.sync.get('selectedProfile', function(data) {
+        let selectedProfile = data.selectedProfile;
+
+        // If selectedProfile doesn't exist, use defaultVals
+        if (!selectedProfile) {
+            getSavedSettings(defaultVals);
+        } else {
+            // Get the profiles object
+            chrome.storage.sync.get('profiles', function(data) {
+                let profiles = data.profiles;
+                let profileSettings = profiles[selectedProfile];
+                getSavedSettings(profileSettings);
+            });
+        }
+    });
+}
+
+function getSavedSettings(settings) {
     // real time range sliders
     var sliders = document.querySelectorAll('.form-range');
     sliders.forEach(function(slider) {
@@ -35,62 +53,21 @@ window.onload = function() {
             label.textContent = this.value;
         }
         slider.dispatchEvent(new Event('input'));
+        slider.value = settings[slider.id] || defaultVals[slider.id] || 0;
     });
 
     // show switch states
     var switches = document.querySelectorAll('[role="switch"]');
     switches.forEach(function(mySwitch) {
-        chrome.storage.sync.get(mySwitch.id).then(result => {
-            mySwitch.checked = result[mySwitch.id] || false;
-        });
-    });
-    
-    // show slider states
-    var sliders = document.querySelectorAll('.form-range');
-    sliders.forEach(function(slider) {
-        chrome.storage.sync.get(slider.id).then(result => {
-            // If not in chrome storage, use default value from JSON file, else set to 0
-            slider.value = result[slider.id] || defaultVals[slider.id] || 0;
-            slider.dispatchEvent(new Event('input')); // Trigger the input event to update the label
-        });
+        mySwitch.checked = settings[mySwitch.id] || false;
     });
 
     // show color input states
     var colorInputs = document.querySelectorAll('.form-control-color');
     colorInputs.forEach(function(colorInput) {
-        chrome.storage.sync.get(colorInput.id).then(result => {
-            // If not in chrome storage, use default value from JSON file, else set to gray
-            colorInput.value = result[colorInput.id] || defaultVals[colorInput.id] || '#808080';
-        });
+        colorInput.value = settings[colorInput.id] || defaultVals[colorInput.id] || '#808080';
     });
-}
-
-
-// Save the state of all of the switches and sliders in storage
-applyButton.addEventListener('click', (event) => {
-    // switches
-    var switches = document.querySelectorAll('[role="switch"]');
-    switches.forEach(function(mySwitch) {
-        chrome.storage.sync.set({[mySwitch.id]: mySwitch.checked}, function() {
-            console.log(mySwitch.id + ' value is set to ' + mySwitch.checked);
-        });
-    });
-    // sliders
-    var sliders = document.querySelectorAll('.form-range');
-    sliders.forEach(function(slider) {
-        var sliderValue = document.getElementById(slider.id + 'Value').textContent;
-        chrome.storage.sync.set({[slider.id]: sliderValue}, function() {
-            console.log(slider.id + ' value is set to ' + sliderValue);
-        });
-    });
-    // color inputs
-    var colorInputs = document.querySelectorAll('.form-control-color');
-    colorInputs.forEach(function(colorInput) {
-        chrome.storage.sync.set({[colorInput.id]: colorInput.value}, function() {
-            console.log(colorInput.id + ' value is set to ' + colorInput.value);
-        });
-    });
-});
+};
 
 
 // profiles are so poeple can adjust the defaults and save their work

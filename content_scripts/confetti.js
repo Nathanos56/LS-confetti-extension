@@ -52,43 +52,40 @@ window.onload = function() {
     // console.log('%cinside dom event listener', 'color: green; font-weight: bold;');
     const LSSubmit = '[data-v-625658].text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
     const LSCheckOff = '[data-v--363100].float-right.ml-2.w-28.text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
-    let checkOffEnabled = false;
-    chrome.storage.sync.get('checkOffSwitch').then(result => {
-        checkOffEnabled = result["checkOffSwitch"] || false; // Set default to false if not found
-        console.log('Check Off Enabled: ', checkOffEnabled);
-        attachClickListener(); //initial attach
+    
+    let profileSettings = {};
+    chrome.storage.sync.get('selectedProfile', function(data) {
+        let selectedProfile = data.selectedProfile;
+
+        // Get the profiles object
+        chrome.storage.sync.get('profiles', function(data) {
+            let profiles = data.profiles || {};
+            profileSettings = profiles[selectedProfile] || {};
+        });
     });
+    let checkOffEnabled = profileSettings["checkOffSwitch"] || false; // Set default to false if not found
+    console.log('Check Off Enabled: ', checkOffEnabled);
+    attachClickListener(); //initial attach
+    
   
     const handleClick = async (event) => {
         // console.log('%cbutton pressed', 'color: green; font-weight: bold;');
-        chrome.storage.sync.get(['selectedProfile'], function(result) {
-            let profileName = result.selectedProfile;
-            
-            // Get the profiles object
-            chrome.storage.sync.get(['profiles'], function(result) {
-                let profiles = result.profiles;
-        
-                // Get the selected profile
-                let profileSettings = profiles[profileName];
-        
-                const particleCount = profileSettings['particleSlider'] || 150;
-                const angle = profileSettings['angleSlider'] || 90;
-                const spread = profileSettings['spreadSlider'] || 270;
-                const velocity = profileSettings['velocitySlider'] || 45;
-                const decay = profileSettings['decaySlider'] || 0.9;
-                const gravity = profileSettings['gravitySlider'] || 1;
-                const drift = profileSettings['driftSlider'] || 0;
-                const ticks = profileSettings['tickSlider'] || 200;
-                const size = profileSettings['particleSizeSlider'] || 1;
-                const burstNum = profileSettings['burstSlider'] || 5;
-                const color1 = profileSettings['colorSelector1'] || '#f00';
-                const color2 = profileSettings['colorSelector2'] || '#00f';
-                const color3 = profileSettings['colorSelector3'] || '#0f0';
+        const particleCount = profileSettings['particleSlider'] || 150;
+        const angle = profileSettings['angleSlider'] || 90;
+        const spread = profileSettings['spreadSlider'] || 270;
+        const velocity = profileSettings['velocitySlider'] || 45;
+        const decay = profileSettings['decaySlider'] || 0.9;
+        const gravity = profileSettings['gravitySlider'] || 1;
+        const drift = profileSettings['driftSlider'] || 0;
+        const ticks = profileSettings['tickSlider'] || 200;
+        const size = profileSettings['particleSizeSlider'] || 1;
+        const burstNum = profileSettings['burstSlider'] || 5;
+        const color1 = profileSettings['colorSelector1'] || '#f00';
+        const color2 = profileSettings['colorSelector2'] || '#00f';
+        const color3 = profileSettings['colorSelector3'] || '#0f0';
 
-                initialConfetti(particleCount, angle, spread, velocity, decay, gravity, drift, ticks, size, color1, color2, color3);
-                randomConfetti(burstNum, color1, color2, color3);
-            });
-        });
+        initialConfetti(particleCount, angle, spread, velocity, decay, gravity, drift, ticks, size, color1, color2, color3);
+        randomConfetti(burstNum, color1, color2, color3);
     };
   
     const attachClickListener = function() {
