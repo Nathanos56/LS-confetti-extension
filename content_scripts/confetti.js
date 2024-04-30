@@ -88,9 +88,11 @@ window.onload = function() {
                 const ticks = profileSettings['tickSlider'] || 200;
                 const size = profileSettings['particleSizeSlider'] || 1;
                 const burstNum = profileSettings['burstSlider'] || 5;
-                // let color1 = '#f00';
-                // let color2 = '#00f';
-                // let color3 = '#0f0';
+
+                // implement colors
+                // const color1 = profileSettings['colorSelector1'] || '#f00';
+                // const color2 = profileSettings['colorSelector2'] || '#00f';
+                // const color3 = profileSettings['colorSelector3'] || '#0f0';
 
                 initialConfetti(particleCount, angle, spread, velocity, decay, gravity, drift, ticks, size);
                 randomConfetti(burstNum);

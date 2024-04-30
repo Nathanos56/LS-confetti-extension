@@ -1,3 +1,20 @@
+// default json file
+const defaultVals = {
+    "particleSlider": 150,
+    "angleSlider": 90,
+    "spreadSlider": 270,
+    "velocitySlider": 45,
+    "decaySlider": 0.9,
+    "gravitySlider": 1,
+    "driftSlider": 0,
+    "tickSlider": 200,
+    "particleSizeSlider": 1,
+    "burstSlider": 5,
+    "colorSelector1": "#f00",
+    "colorSelector2": "#00f",
+    "colorSelector3": "#0f0"
+}
+
 // switches
 // const checkOffSwitch = document.getElementById('checkOffSwitch');
 // const shortcutSwitch = document.getElementById('shortcutSwitch');
@@ -33,7 +50,8 @@ window.onload = function() {
     var sliders = document.querySelectorAll('.form-range');
     sliders.forEach(function(slider) {
         chrome.storage.sync.get(slider.id).then(result => {
-            slider.value = result[slider.id] || 0; // Set default to false if not found
+            // If not in chrome storage, use default value from JSON file, else set to 0
+            slider.value = result[slider.id] || defaultVals[slider.id] || 0;
             slider.dispatchEvent(new Event('input')); // Trigger the input event to update the label
         });
     });
@@ -42,7 +60,8 @@ window.onload = function() {
     var colorInputs = document.querySelectorAll('.form-control-color');
     colorInputs.forEach(function(colorInput) {
         chrome.storage.sync.get(colorInput.id).then(result => {
-            colorInput.value = result[colorInput.id] || '#CCCCCC';
+            // If not in chrome storage, use default value from JSON file, else set to gray
+            colorInput.value = result[colorInput.id] || defaultVals[colorInput.id] || '#CCCCCC';
         });
     });
 }
@@ -74,15 +93,6 @@ applyButton.addEventListener('click', (event) => {
     });
 });
 
-
-// show when sliders are disabled
-
-// function enableSliders(isChecked) {
-//     var sliders = document.getElementsByClassName('form-range');
-//     for (var i = 0; i < sliders.length; i++) {
-//         sliders[i].disabled = !isChecked;
-//     }
-// }
 
 
 var profiles = {}; // all profiles
@@ -124,8 +134,23 @@ applyButton.addEventListener('click', (event) => {
     });
 });
 
+
+
 // profiles:
 // snow
 // fireworks
 // wool
 // confetti
+
+
+
+
+
+// show when sliders are disabled
+
+// function enableSliders(isChecked) {
+//     var sliders = document.getElementsByClassName('form-range');
+//     for (var i = 0; i < sliders.length; i++) {
+//         sliders[i].disabled = !isChecked;
+//     }
+// }
