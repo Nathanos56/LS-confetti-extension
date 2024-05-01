@@ -54,6 +54,7 @@ window.onload = function() {
     const LSCheckOff = '[data-v--363100].float-right.ml-2.w-28.text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
     
     let profileSettings = {};
+    let checkOffEnabled = false;
     chrome.storage.sync.get('selectedProfile', function(data) {
         let selectedProfile = data.selectedProfile;
 
@@ -61,11 +62,13 @@ window.onload = function() {
         chrome.storage.sync.get('profiles', function(data) {
             let profiles = data.profiles || {};
             profileSettings = profiles[selectedProfile] || {};
+
+            checkOffEnabled = profileSettings["checkOffSwitch"] || false; // Set default to false if not found
+            console.log('Check Off Enabled: ', checkOffEnabled);
+            attachClickListener(); //initial attach
         });
     });
-    let checkOffEnabled = profileSettings["checkOffSwitch"] || false; // Set default to false if not found
-    console.log('Check Off Enabled: ', checkOffEnabled);
-    attachClickListener(); //initial attach
+    
     
   
     const handleClick = async (event) => {

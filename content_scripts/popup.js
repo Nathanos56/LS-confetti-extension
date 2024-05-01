@@ -1,3 +1,7 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './popup.css';
+import 'bootstrap';
+
 const defaultVals = {
     "particleSlider": 150,
     "angleSlider": 90,
@@ -13,11 +17,6 @@ const defaultVals = {
     "colorSelector2": "#0000ff",
     "colorSelector3": "#00ff00"
 }
-
-// switches
-// const checkOffSwitch = document.getElementById('checkOffSwitch');
-// const shortcutSwitch = document.getElementById('shortcutSwitch');
-// const customConfettiSwitch = document.getElementById('customConfettiSwitch');
 
 // buttons
 const applyButton = document.getElementById('applyButton');
@@ -52,8 +51,8 @@ function getSavedSettings(settings) {
         slider.oninput = function() {
             label.textContent = this.value;
         }
-        slider.dispatchEvent(new Event('input'));
         slider.value = settings[slider.id] || defaultVals[slider.id] || 0;
+        slider.dispatchEvent(new Event('input'));
     });
 
     // show switch states
@@ -112,19 +111,7 @@ applyButton.addEventListener('click', (event) => {
 
 
 resetButton.addEventListener('click', (event) => {
-    // update sliders
-    var sliders = document.querySelectorAll('.form-range');
-    sliders.forEach(function(slider) {
-        var label = document.getElementById(slider.id + 'Value');
-        slider.value = defaultVals[slider.id] || 0;
-        label.textContent = slider.value;
-    });
-
-    // update color inputs
-    var colorInputs = document.querySelectorAll('.form-control-color');
-    colorInputs.forEach(function(colorInput) {
-        colorInput.value = defaultVals[colorInput.id] || '#808080';
-    });
+    getSavedSettings(defaultVals)
 });
 
 
