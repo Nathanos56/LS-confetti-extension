@@ -21,8 +21,14 @@ const defaultVals = {
 // buttons
 const applyButton = document.getElementById('applyButton');
 const resetButton = document.getElementById('resetButton');
-// const testButton = document.getElementById('testButton'); 
-// can't use a test button without giving the extension access to every webpage
+// const testButton = document.getElementById('testButton'); // can't use a test button without giving the extension access to every webpage
+
+// switches
+const snowSwitch = document.getElementById('snowSwitch');
+const fireworkSwitch = document.getElementById('fireworkSwitch');
+const woolSwitch = document.getElementById('woolSwitch');
+const confettiSwitch = document.getElementById('confettiSwitch');
+
 
 window.onload = function() {
     // Get the selected profile name
@@ -122,8 +128,65 @@ resetButton.addEventListener('click', (event) => {
 // confetti
 
 
+function createSliders(parentId, labelText, sliderId, min, max, step) {
+    var parentElement = document.getElementById(parentId);
 
+    var newDiv = document.createElement("div");
+    newDiv.classname = "ms-5 me-5 mt-2";
 
+    var labelContainer = document.createElement("div");
+
+    var newLabel = document.createElement("label");
+    newLabel.classname = "form-label";
+    newLabel.htmlFor = sliderId;
+    newLabel.textContent = labelText;
+
+    var labelVal = document.createElement("label");
+    labelVal.style.float = "right";
+    labelVal.id = sliderId + "Value";
+
+    labelContainer.appendChild(newLabel);
+    labelContainer.appendChild(labelVal);
+
+    var newInput = document.createElement("input");
+    newInput.className = "form-range";
+    newInput.type = "range";
+    newInput.min = min;
+    newInput.max = max;
+    newInput.step = step;
+    newInput.id = sliderId;
+
+    newDiv.appendChild(labelContainer);
+    newDiv.appendChild(newInput);
+
+    parentElement.appendChild(newDiv);
+};
+
+function createColorInputs(parentId, labelText, colorSelectorIds) {
+    var parentElement = document.getElementById(parentId);
+
+    var newForm = document.createElement("form");
+    var newLabel = document.createElement("label");
+    newLabel.classname = "form-label";
+    newLabel.htmlFor = colorSelectorIds[0];
+    newLabel.textContent = labelText;
+
+    newForm.appendChild(newLabel);
+
+    var colorContainer = documetn.createElement("div");
+    colorContainer.className = "d-flex justify-content-between ms-4 me-4";
+
+    for (var i = 0; i < colorSelectorIds.length; ++i) {
+        var newInput = document.createElement("input");
+        newInput.className = "form-control form-control-color";
+        newInput.type = "color";
+        newInput.id = colorSelectorIds[i];
+        colorContainer.appendChild(newInput);
+    };
+
+    newForm.appendChild(colorContainer);
+    parentElement.appendChild(newForm);
+};
 
 // show when sliders are disabled
 
