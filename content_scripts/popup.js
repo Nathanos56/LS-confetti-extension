@@ -23,13 +23,6 @@ const applyButton = document.getElementById('applyButton');
 const resetButton = document.getElementById('resetButton');
 // const testButton = document.getElementById('testButton'); // can't use a test button without giving the extension access to every webpage
 
-// switches
-const snowSwitch = document.getElementById('snowSwitch');
-const fireworkSwitch = document.getElementById('fireworkSwitch');
-const woolSwitch = document.getElementById('woolSwitch');
-const confettiSwitch = document.getElementById('confettiSwitch');
-
-
 window.onload = function() {
     // Get the selected profile name
     chrome.storage.sync.get('selectedProfile', function(data) {
@@ -47,6 +40,9 @@ window.onload = function() {
             });
         }
     });
+
+    // add event listeners to switches
+    addSwitchEventListeners();
 }
 
 function getSavedSettings(settings) {
@@ -132,12 +128,12 @@ function createSliders(parentId, labelText, sliderId, min, max, step) {
     var parentElement = document.getElementById(parentId);
 
     var newDiv = document.createElement("div");
-    newDiv.classname = "ms-5 me-5 mt-2";
+    newDiv.className = "ms-5 me-5 mt-2";
 
     var labelContainer = document.createElement("div");
 
     var newLabel = document.createElement("label");
-    newLabel.classname = "form-label";
+    newLabel.className = "form-label";
     newLabel.htmlFor = sliderId;
     newLabel.textContent = labelText;
 
@@ -167,13 +163,13 @@ function createColorInputs(parentId, labelText, colorSelectorIds) {
 
     var newForm = document.createElement("form");
     var newLabel = document.createElement("label");
-    newLabel.classname = "form-label";
+    newLabel.className = "form-label";
     newLabel.htmlFor = colorSelectorIds[0];
     newLabel.textContent = labelText;
 
     newForm.appendChild(newLabel);
 
-    var colorContainer = documetn.createElement("div");
+    var colorContainer = document.createElement("div");
     colorContainer.className = "d-flex justify-content-between ms-4 me-4";
 
     for (var i = 0; i < colorSelectorIds.length; ++i) {
@@ -187,6 +183,104 @@ function createColorInputs(parentId, labelText, colorSelectorIds) {
     newForm.appendChild(colorContainer);
     parentElement.appendChild(newForm);
 };
+
+
+
+
+function addSwitchEventListeners() {
+    // switches
+    const snowSwitch = document.getElementById('snowSwitch');
+    const fireworkSwitch = document.getElementById('fireworkSwitch');
+    const woolSwitch = document.getElementById('woolSwitch');
+    const confettiSwitch = document.getElementById('confettiSwitch');
+
+    // comment out the lines for the sliders that aren't needed
+    snowSwitch.addEventListener('change', (event) => {
+        if(event.target.checked) {
+            // createSliders(parentId, labelText, sliderId, min, max, step)
+            let parentId = "snowOptions";
+            createSliders(parentId, "Particle Count", "particleSlider", 10, 500, 10);
+            createSliders(parentId, "Angle", "angleSlider", 0, 180, 5);
+            createSliders(parentId, "Spread", "spreadSlider", 10, 360, 10);
+            createSliders(parentId, "Initial Velocity", "velocitySlider", 10, 100, 5);
+            createSliders(parentId, "Decay", "decaySlider", .2, 2, .1);
+            createSliders(parentId, "Gravity", "gravitySlider", .1, 3, .1);
+            createSliders(parentId, "Wind", "driftSlider", 0, 20, 1);
+            createSliders(parentId, "Ticks", "tickSlider", 0, 500, 10);
+            createSliders(parentId, "Particle Size", "particleSizeSlider", .2, 5, .1);
+            createSliders(parentId, "Random Bursts", "burstSlider", 0, 20, 1);
+
+            // createColorInputs(parentId, labelText, colorSelectorIds)
+            parentId = "colorOptions";
+            createColorInputs(parentId, "Confetti Colors", ["colorSelector1", "colorSelector2", "colorSelector3"]);
+        }
+    });
+
+    fireworkSwitch.addEventListener('change', (event) => {
+        if(event.target.checked) {
+            // createSliders(parentId, labelText, sliderId, min, max, step)
+            let parentId = "fireworkOptions";
+            createSliders(parentId, "Particle Count", "particleSlider", 10, 500, 10);
+            createSliders(parentId, "Angle", "angleSlider", 0, 180, 5);
+            createSliders(parentId, "Spread", "spreadSlider", 10, 360, 10);
+            createSliders(parentId, "Initial Velocity", "velocitySlider", 10, 100, 5);
+            createSliders(parentId, "Decay", "decaySlider", .2, 2, .1);
+            createSliders(parentId, "Gravity", "gravitySlider", .1, 3, .1);
+            createSliders(parentId, "Wind", "driftSlider", 0, 20, 1);
+            createSliders(parentId, "Ticks", "tickSlider", 0, 500, 10);
+            createSliders(parentId, "Particle Size", "particleSizeSlider", .2, 5, .1);
+            createSliders(parentId, "Random Bursts", "burstSlider", 0, 20, 1);
+
+            // createColorInputs(parentId, labelText, colorSelectorIds)
+            parentId = "colorOptions";
+            createColorInputs(parentId, "Confetti Colors", ["colorSelector1", "colorSelector2", "colorSelector3"]);
+        }
+    });
+
+    woolSwitch.addEventListener('change', (event) => {
+        if(event.target.checked) {
+            // createSliders(parentId, labelText, sliderId, min, max, step)
+            let parentId = "woolOptions";
+            createSliders(parentId, "Particle Count", "particleSlider", 10, 500, 10);
+            createSliders(parentId, "Angle", "angleSlider", 0, 180, 5);
+            createSliders(parentId, "Spread", "spreadSlider", 10, 360, 10);
+            createSliders(parentId, "Initial Velocity", "velocitySlider", 10, 100, 5);
+            createSliders(parentId, "Decay", "decaySlider", .2, 2, .1);
+            createSliders(parentId, "Gravity", "gravitySlider", .1, 3, .1);
+            createSliders(parentId, "Wind", "driftSlider", 0, 20, 1);
+            createSliders(parentId, "Ticks", "tickSlider", 0, 500, 10);
+            createSliders(parentId, "Particle Size", "particleSizeSlider", .2, 5, .1);
+            createSliders(parentId, "Random Bursts", "burstSlider", 0, 20, 1);
+
+            // createColorInputs(parentId, labelText, colorSelectorIds)
+            parentId = "colorOptions";
+            createColorInputs(parentId, "Confetti Colors", ["colorSelector1", "colorSelector2", "colorSelector3"]);
+        }
+    });
+
+    confettiSwitch.addEventListener('change', (event) => {
+        if(event.target.checked) {
+            // createSliders(parentId, labelText, sliderId, min, max, step)
+            let parentId = "confettiOptions";
+            createSliders(parentId, "Particle Count", "particleSlider", 10, 500, 10);
+            createSliders(parentId, "Angle", "angleSlider", 0, 180, 5);
+            createSliders(parentId, "Spread", "spreadSlider", 10, 360, 10);
+            createSliders(parentId, "Initial Velocity", "velocitySlider", 10, 100, 5);
+            createSliders(parentId, "Decay", "decaySlider", .2, 2, .1);
+            createSliders(parentId, "Gravity", "gravitySlider", .1, 3, .1);
+            createSliders(parentId, "Wind", "driftSlider", 0, 20, 1);
+            createSliders(parentId, "Ticks", "tickSlider", 0, 500, 10);
+            createSliders(parentId, "Particle Size", "particleSizeSlider", .2, 5, .1);
+            createSliders(parentId, "Random Bursts", "burstSlider", 0, 20, 1);
+
+            // createColorInputs(parentId, labelText, colorSelectorIds)
+            parentId = "colorOptions";
+            createColorInputs(parentId, "Confetti Colors", ["colorSelector1", "colorSelector2", "colorSelector3"]);
+        }
+    });
+}
+
+
 
 // show when sliders are disabled
 
