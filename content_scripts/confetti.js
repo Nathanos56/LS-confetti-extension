@@ -1,6 +1,20 @@
 import confetti from 'canvas-confetti';
 
-function initialConfetti(MyparticleCount, angle, spread, velocity, decay, gravity, drift, ticks, size, color1, color2, color3) {
+function initialConfetti(profileSettings) {
+    const MyparticleCount = profileSettings['particleSlider'] || 150;
+    const angle = profileSettings['angleSlider'] || 90;
+    const spread = profileSettings['spreadSlider'] || 270;
+    const velocity = profileSettings['velocitySlider'] || 45;
+    const decay = profileSettings['decaySlider'] || 0.9;
+    const gravity = profileSettings['gravitySlider'] || 1;
+    const drift = profileSettings['driftSlider'] || 0;
+    const ticks = profileSettings['tickSlider'] || 200;
+    const size = profileSettings['particleSizeSlider'] || 1;
+    const burstNum = profileSettings['burstSlider'] || 5;
+    const color1 = profileSettings['colorSelector1'] || '#f00';
+    const color2 = profileSettings['colorSelector2'] || '#00f';
+    const color3 = profileSettings['colorSelector3'] || '#0f0';
+    
     // Default values are commented
     const testConfettiSettings = {
         particleCount: MyparticleCount,  // 50
@@ -17,6 +31,8 @@ function initialConfetti(MyparticleCount, angle, spread, velocity, decay, gravit
         colors: [color1, color2, color3], // Adjust the confetti colors
     };
     confetti(testConfettiSettings);
+
+    randomConfetti(burstNum, color1, color2, color3);
 }
 
 function randomConfetti(burstNum, color1, color2, color3) {
@@ -47,6 +63,85 @@ function randomConfetti(burstNum, color1, color2, color3) {
     });
 }
 
+function steelWool(profileSettings) {
+
+}
+
+function fireworks(profileSettings) {
+    const inputTime = profileSettings['timeSlider'] || 5;
+    const MyparticleCount = profileSettings['particleSlider'] || 150;
+
+    var duration = inputTime * 1000;
+    var animationEnd = Date.now() + duration;
+    var settings = { velocity: profileSettings['velocitySlider'] || 30,
+        spread: profileSettings['spreadSlider'] || 360,
+        ticks: profileSettings['tickSlider'] || 60,
+        zIndex: 0,
+        colors: [profileSettings['colorSelector1'] || '#f00', profileSettings['colorSelector2'] || '#00f', profileSettings['colorSelector3'] || '#0f0'],
+        particleCount: MyparticleCount * (timeLeft / duration) //this fades out the fireworks
+    };
+
+    function randomInRange(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    var interval = setInterval(function() {
+        var timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+            return clearInterval(interval);
+        }
+
+        // since particles fall down, start a bit higher than random
+        confetti({ ...settings, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+        confetti({ ...settings, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+    }, 250); //250ms between launches
+}
+
+function snow(profileSettings) {
+    const inputTime = profileSettings['timeSlider'] || 5;
+
+    var duration = inputTime * 1000;
+    var animationEnd = Date.now() + duration;
+    var skew = 1;
+
+    function randomInRange(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    (function frame() {
+        var timeLeft = animationEnd - Date.now();
+        var ticks = Math.max(profileSettings['tickSlider'] || 200, 500 * (timeLeft / duration));
+        skew = Math.max(0.8, skew - 0.001);
+
+        confetti({
+            particleCount: 1,
+            startVelocity: 0,
+            ticks: ticks,
+            origin: {
+                x: Math.random(),
+                y: (Math.random() * skew) - 0.2 // since particles fall down, skew start toward the top
+            },
+            colors: [profileSettings['colorSelector1'] || '#ffffff', profileSettings['colorSelector2'] ||  '#ffffff', profileSettings['colorSelector3'] ||  '#ffffff'],
+            shapes: ['circle'],
+            gravity: randomInRange(0.4, 0.6),
+            scalar: randomInRange(0.4, 1),
+            drift: randomInRange(-0.4, 0.4)
+        });
+
+        if (timeLeft > 0) {
+            requestAnimationFrame(frame);
+        }
+    }());
+}
+
+
+
+// future updates:
+// add logic to pick which confetti function to call
+// change popup.js sliders to match each confetti function
+// add css animations in the popup
+
 
 window.onload = function() {
     // console.log('%cinside dom event listener', 'color: green; font-weight: bold;');
@@ -55,40 +150,25 @@ window.onload = function() {
     
     let profileSettings = {};
     let checkOffEnabled = false;
-    chrome.storage.sync.get('selectedProfile', function(data) {
-        let selectedProfile = data.selectedProfile;
-
-        // Get the profiles object
-        chrome.storage.sync.get('profiles', function(data) {
-            let profiles = data.profiles || {};
-            profileSettings = profiles[selectedProfile] || {};
-
-            checkOffEnabled = profileSettings["checkOffSwitch"] || false; // Set default to false if not found
-            console.log('Check Off Enabled: ', checkOffEnabled);
-            attachClickListener(); //initial attach
-        });
-    });
-    
     
   
     const handleClick = async (event) => {
         // console.log('%cbutton pressed', 'color: green; font-weight: bold;');
-        const particleCount = profileSettings['particleSlider'] || 150;
-        const angle = profileSettings['angleSlider'] || 90;
-        const spread = profileSettings['spreadSlider'] || 270;
-        const velocity = profileSettings['velocitySlider'] || 45;
-        const decay = profileSettings['decaySlider'] || 0.9;
-        const gravity = profileSettings['gravitySlider'] || 1;
-        const drift = profileSettings['driftSlider'] || 0;
-        const ticks = profileSettings['tickSlider'] || 200;
-        const size = profileSettings['particleSizeSlider'] || 1;
-        const burstNum = profileSettings['burstSlider'] || 5;
-        const color1 = profileSettings['colorSelector1'] || '#f00';
-        const color2 = profileSettings['colorSelector2'] || '#00f';
-        const color3 = profileSettings['colorSelector3'] || '#0f0';
-
-        initialConfetti(particleCount, angle, spread, velocity, decay, gravity, drift, ticks, size, color1, color2, color3);
-        randomConfetti(burstNum, color1, color2, color3);
+        chrome.storage.sync.get('selectedProfile', function(data) {
+            let selectedProfile = data.selectedProfile;
+    
+            // Get the profiles object
+            chrome.storage.sync.get('profiles', function(data) {
+                let profiles = data.profiles || {};
+                profileSettings = profiles[selectedProfile] || {};
+    
+                checkOffEnabled = profileSettings["checkOffSwitch"] || false; // Set default to false if not found
+                console.log('Check Off Enabled: ', checkOffEnabled);
+                attachClickListener(); //initial attach
+            });
+        });
+        
+        initialConfetti(profileSettings);
     };
   
     const attachClickListener = function() {
@@ -121,6 +201,7 @@ window.onload = function() {
   
     // console.log('%cjs file loaded', 'color: green; font-weight: bold;');
 };
+
 
 
 

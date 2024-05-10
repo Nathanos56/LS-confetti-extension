@@ -188,7 +188,6 @@ function createColorInputs(parentId, labelText, colorSelectorIds) {
 
 
 function addSwitchEventListeners() {
-    // switches
     const snowSwitch = document.getElementById('snowSwitch');
     const fireworkSwitch = document.getElementById('fireworkSwitch');
     const woolSwitch = document.getElementById('woolSwitch');
