@@ -184,6 +184,11 @@ function createColorInputs(parentId, labelText, colorSelectorIds) {
     parentElement.appendChild(newDiv);
 };
 
+function deleteSwitchSettings(parentId) {
+    const parent = document.getElementById(parentId);
+    while (parent.firstChild) { parent.removeChild(parent.firstChild) }
+}
+
 
 
 
@@ -195,22 +200,21 @@ function addSwitchEventListeners() {
 
     // comment out the lines for the sliders that aren't needed
     snowSwitch.addEventListener('change', (event) => {
+        const parentId = "snowOptions";
         if(event.target.checked) {
             // createSliders(parentId, labelText, sliderId, min, max, step)
-            let parentId = "snowOptions";
             // add time
             createSliders(parentId, "Ticks", "tickSlider", 0, 500, 10);
             
             // createColorInputs(parentId, labelText, colorSelectorIds)
-            // parentId = "colorOptions";
             createColorInputs(parentId, "Snow Colors", ["colorSelector1", "colorSelector2", "colorSelector3"]);
-        }
+        } else { deleteSwitchSettings(parentId) };
     });
 
     fireworkSwitch.addEventListener('change', (event) => {
+        const parentId = "fireworkOptions";
         if(event.target.checked) {
             // createSliders(parentId, labelText, sliderId, min, max, step)
-            let parentId = "fireworkOptions";
             // add time
             createSliders(parentId, "Particle Count", "particleSlider", 10, 500, 10);
             createSliders(parentId, "Initial Velocity", "velocitySlider", 10, 100, 5);
@@ -218,15 +222,14 @@ function addSwitchEventListeners() {
             createSliders(parentId, "Ticks", "tickSlider", 0, 500, 10);
 
             // createColorInputs(parentId, labelText, colorSelectorIds)
-            // parentId = "colorOptions";
             createColorInputs(parentId, "Firework Colors", ["colorSelector1", "colorSelector2", "colorSelector3"]);
-        }
+        } else { deleteSwitchSettings(parentId) };
     });
 
     woolSwitch.addEventListener('change', (event) => {
+        const parentId = "woolOptions";
         if(event.target.checked) {
             // // createSliders(parentId, labelText, sliderId, min, max, step)
-            // let parentId = "woolOptions";
             // createSliders(parentId, "Particle Count", "particleSlider", 10, 500, 10);
             // createSliders(parentId, "Angle", "angleSlider", 0, 180, 5);
             // createSliders(parentId, "Spread", "spreadSlider", 10, 360, 10);
@@ -239,15 +242,14 @@ function addSwitchEventListeners() {
             // createSliders(parentId, "Random Bursts", "burstSlider", 0, 20, 1);
 
             // // createColorInputs(parentId, labelText, colorSelectorIds)
-            // // parentId = "colorOptions";
             // createColorInputs(parentId, "Spark Colors", ["colorSelector1", "colorSelector2", "colorSelector3"]);
-        }
+        } else { deleteSwitchSettings(parentId) };
     });
 
     confettiSwitch.addEventListener('change', (event) => {
+        const parentId = "confettiOptions";
         if(event.target.checked) {
             // createSliders(parentId, labelText, sliderId, min, max, step)
-            let parentId = "confettiOptions";
             createSliders(parentId, "Particle Count", "particleSlider", 10, 500, 10);
             createSliders(parentId, "Angle", "angleSlider", 0, 180, 5);
             createSliders(parentId, "Spread", "spreadSlider", 10, 360, 10);
@@ -260,9 +262,8 @@ function addSwitchEventListeners() {
             createSliders(parentId, "Random Bursts", "burstSlider", 0, 20, 1);
 
             // createColorInputs(parentId, labelText, colorSelectorIds)
-            // parentId = "colorOptions";
             createColorInputs(parentId, "Confetti Colors", ["colorSelector1", "colorSelector2", "colorSelector3"]);
-        }
+        } else { deleteSwitchSettings(parentId) };
     });
 }
 

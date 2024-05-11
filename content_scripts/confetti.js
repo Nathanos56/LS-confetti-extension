@@ -139,8 +139,8 @@ function snow(profileSettings) {
 
 // future updates:
 // add logic to pick which confetti function to call
-// change popup.js sliders to match each confetti function
 // add css animations in the popup
+// change default color of the color pickers in popup.js
 
 
 window.onload = function() {
