@@ -1,3 +1,11 @@
+
+// toDo:
+// add css animations in the popup
+// change default color of the color pickers in popup.js
+// create steelwool effect
+// popup.js automatically empties the profiles here:  var profiles = {};     instead, get the profiles from storage
+
+
 import confetti from 'canvas-confetti';
 
 function initialConfetti(profileSettings) {
@@ -137,38 +145,52 @@ function snow(profileSettings) {
 
 
 
-// future updates:
-// add logic to pick which confetti function to call
-// add css animations in the popup
-// change default color of the color pickers in popup.js
 
+
+
+// splitting this into its own function lets the user test settings without refreshing the page
+function getSettings() {
+    chrome.storage.sync.get('selectedProfile', function(data) {
+        let selectedProfile = data.selectedProfile;
+
+        // gets the profiles object
+        chrome.storage.sync.get('profiles', function(data) {
+            let profiles = data.profiles || {};
+            return profiles[selectedProfile] || {}; //returns profileSettings
+        });
+    });
+}
 
 window.onload = function() {
     // console.log('%cinside dom event listener', 'color: green; font-weight: bold;');
     const LSSubmit = '[data-v-625658].text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
     const LSCheckOff = '[data-v--363100].float-right.ml-2.w-28.text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
     
-    let profileSettings = {};
-    let checkOffEnabled = false;
-    
+    let profileSettings = getSettings();
+    let checkOffEnabled = profileSettings["checkOffSwitch"] || false;
+    attachClickListener(); //initial attach
   
     const handleClick = async (event) => {
         // console.log('%cbutton pressed', 'color: green; font-weight: bold;');
-        chrome.storage.sync.get('selectedProfile', function(data) {
-            let selectedProfile = data.selectedProfile;
-    
-            // Get the profiles object
-            chrome.storage.sync.get('profiles', function(data) {
-                let profiles = data.profiles || {};
-                profileSettings = profiles[selectedProfile] || {};
-    
-                checkOffEnabled = profileSettings["checkOffSwitch"] || false; // Set default to false if not found
-                console.log('Check Off Enabled: ', checkOffEnabled);
-                attachClickListener(); //initial attach
-            });
-        });
+        profileSettings = getSettings();
+        checkOffEnabled = profileSettings["checkOffSwitch"] || false;
         
-        initialConfetti(profileSettings);
+        let confettiType = profileSettings["selectedProfile"] || "confetti";
+        
+        switch(confettiType) {
+            case "confetti":
+                initialConfetti(profileSettings);
+                break;
+            case "steelWool":
+                steelWool(profileSettings);
+                break;
+            case "fireworks":
+                fireworks(profileSettings);
+                break;
+            case "snow":
+                snow(profileSettings);
+                break;
+        }
     };
   
     const attachClickListener = function() {
@@ -188,7 +210,8 @@ window.onload = function() {
             }
         });
     };
-  
+    
+    // when the dom changes
     const observer = new MutationObserver((mutationsList, observer) => {
         for(let mutation of mutationsList) {
             if (mutation.type === 'childList' || mutation.type === 'attributes' || mutation.type === 'characterData') {

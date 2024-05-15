@@ -18,10 +18,11 @@ const defaultVals = {
     "colorSelector3": "#00ff00"
 }
 
-// buttons
 const applyButton = document.getElementById('applyButton');
 const resetButton = document.getElementById('resetButton');
 // const testButton = document.getElementById('testButton'); // can't use a test button without giving the extension access to every webpage
+
+let selectedProfile = null;
 
 window.onload = function() {
     // Get the selected profile name
@@ -41,9 +42,12 @@ window.onload = function() {
         }
     });
 
+
     // add event listeners to switches
     addSwitchEventListeners();
 }
+
+
 
 function getSavedSettings(settings) {
     // real time range sliders
@@ -68,6 +72,8 @@ function getSavedSettings(settings) {
     colorInputs.forEach(function(colorInput) {
         colorInput.value = settings[colorInput.id] || defaultVals[colorInput.id] || '#808080';
     });
+
+    selectedProfile = settings["selectedProfile"] || "confetti";
 };
 
 
@@ -97,8 +103,7 @@ applyButton.addEventListener('click', (event) => {
     });
 
     // Save the profile to the profiles object
-    var profileName = "confetti"; // Replace with dynamic profile name
-    profiles[profileName] = profile;
+    profiles[selectedProfile] = profile;
 
     // Save the profiles object to chrome storage
     chrome.storage.sync.set({profiles: profiles}, function() {
@@ -202,6 +207,8 @@ function addSwitchEventListeners() {
     snowSwitch.addEventListener('change', (event) => {
         const parentId = "snowOptions";
         if(event.target.checked) {
+            uncheckSwitches("snowSwitch");
+
             // createSliders(parentId, labelText, sliderId, min, max, step)
             // add time
             createSliders(parentId, "Ticks", "tickSlider", 0, 500, 10);
@@ -214,6 +221,8 @@ function addSwitchEventListeners() {
     fireworkSwitch.addEventListener('change', (event) => {
         const parentId = "fireworkOptions";
         if(event.target.checked) {
+            uncheckSwitches("fireworkSwitch");
+
             // createSliders(parentId, labelText, sliderId, min, max, step)
             // add time
             createSliders(parentId, "Particle Count", "particleSlider", 10, 500, 10);
@@ -229,6 +238,8 @@ function addSwitchEventListeners() {
     woolSwitch.addEventListener('change', (event) => {
         const parentId = "woolOptions";
         if(event.target.checked) {
+            // uncheckSwitches("woolSwitch");
+
             // // createSliders(parentId, labelText, sliderId, min, max, step)
             // createSliders(parentId, "Particle Count", "particleSlider", 10, 500, 10);
             // createSliders(parentId, "Angle", "angleSlider", 0, 180, 5);
@@ -249,6 +260,8 @@ function addSwitchEventListeners() {
     confettiSwitch.addEventListener('change', (event) => {
         const parentId = "confettiOptions";
         if(event.target.checked) {
+            uncheckSwitches("confettiSwitch");
+
             // createSliders(parentId, labelText, sliderId, min, max, step)
             createSliders(parentId, "Particle Count", "particleSlider", 10, 500, 10);
             createSliders(parentId, "Angle", "angleSlider", 0, 180, 5);
@@ -267,7 +280,10 @@ function addSwitchEventListeners() {
     });
 }
 
-
+function uncheckSwitches(targetSwitch) {
+    const switches = document.querySelectorAll(`[role="switch"]:not(#checkOffSwitch):not(#${targetSwitch})`);
+    switches.forEach(sw => sw.checked = false);
+}
 
 // show when sliders are disabled
 
