@@ -1,1 +1,54 @@
-<!doctype html><html><head><script defer="defer" src="popup.bundle.js"></script></head><body><header class="bg-light pt-3 pb-2 mb-4 shadow-sm border-bottom justify-content-center align-items-center container-fluid d-flex"><h4><img class="me-2" id="logo" src="/dist/images/icon48.png" style="width: 32px; height: 32px;"/> Learning Suite Confetti <img class="ms-3" id="logo" src="/dist/images/icon48.png" style="width: 32px; height: 32px;"/></h4></header><main><div class="p-0 form-check form-switch d-flex justify-content-between align-items-center"><label class="form-check-label ms-4">Enable "Check Off" Confetti</label> <input class="form-check-input me-4" type="checkbox" role="switch" id="checkOffSwitch"></div><div class="p-0 form-check form-switch d-flex justify-content-between align-items-center"><label class="form-check-label ms-4">Snow</label> <input class="form-check-input me-4" type="checkbox" role="switch" id="snowSwitch"></div><div id="snowOptions"></div><div class="p-0 form-check form-switch d-flex justify-content-between align-items-center"><label class="form-check-label ms-4">Fireworks</label> <input class="form-check-input me-4" type="checkbox" role="switch" id="fireworkSwitch"></div><div id="fireworkOptions"></div><div class="p-0 form-check form-switch d-flex justify-content-between align-items-center"><label class="form-check-label ms-4">Steel Wool</label> <input class="form-check-input me-4" type="checkbox" role="switch" id="woolSwitch"></div><div id="woolOptions"></div><div class="p-0 form-check form-switch d-flex justify-content-between align-items-center"><label class="form-check-label ms-4">Confetti</label> <input class="form-check-input me-4" type="checkbox" role="switch" id="confettiSwitch"></div><div id="confettiOptions"></div><div class="d-flex justify-content-between align-items-center ms-5 me-5 mt-4"><button type="button" id="applyButton" class="btn btn-outline-primary btn-sm ms-3">Apply</button> <button type="button" id="resetButton" class="btn btn-outline-danger btn-sm ms-3 me-3">Reset</button></div><div class="text-center mt-5">Refresh the page to see changes</div></main><footer class="fixed-bottom d-flex justify-content-center align-items-center shadow text-secondary mt-auto border-top bg-light"><div>Nathaniel Wilson &nbsp; - &nbsp; <a class="text-reset" href="https://github.com/nthnlwilson/LS-confetti-extension">GitHub</a></div></footer><script src="popup.js"></script></body></html>
+<!DOCTYPE html>
+<html>
+<head><script defer src="popup.bundle.js"></script></head>
+<body>
+    <header class="bg-light pt-3 pb-2 mb-4 shadow-sm border-bottom justify-content-center align-items-center container-fluid d-flex ">
+        <h4><img class="me-2" id="logo" src="/dist/images/icon48.png" style="width: 32px; height: 32px;"/> Learning Suite Confetti <img class="ms-3" id="logo" src="/dist/images/icon48.png" style="width: 32px; height: 32px;"/></h4>
+    </header>
+    <main>
+        <!-- toggles -->
+        <div class="p-0 form-check form-switch d-flex justify-content-between align-items-center">
+            <label class="form-check-label ms-4">Enable "Check Off" Confetti</label>
+            <input class="form-check-input me-4" type="checkbox" role="switch" id="checkOffSwitch">
+        </div>
+        <!-- <div class="p-0 form-check form-switch d-flex justify-content-between align-items-center">
+            <label class="form-check-label ms-4">Enable Confetti Shortcut</label>
+            <input class="form-check-input me-4" type="checkbox" role="switch" id="shortcutSwitch">
+        </div> -->
+        <!-- presets -->
+        <div class="p-0 form-check form-switch d-flex justify-content-between align-items-center">
+            <label class="form-check-label ms-4">Snow</label>
+            <input class="form-check-input me-4" type="checkbox" role="switch" id="snowSwitch">
+        </div>
+        <div id="snowOptions"></div>
+        <div class="p-0 form-check form-switch d-flex justify-content-between align-items-center">
+            <label class="form-check-label ms-4">Fireworks</label>
+            <input class="form-check-input me-4" type="checkbox" role="switch" id="fireworkSwitch">
+        </div>
+        <div id="fireworkOptions"></div>
+        <div class="p-0 form-check form-switch d-flex justify-content-between align-items-center">
+            <label class="form-check-label ms-4">Steel Wool</label>
+            <input class="form-check-input me-4" type="checkbox" role="switch" id="woolSwitch">
+        </div>
+        <div id="woolOptions"></div>
+        <!-- custom -->
+        <div class="p-0 form-check form-switch d-flex justify-content-between align-items-center">
+            <label class="form-check-label ms-4">Confetti</label>
+            <input class="form-check-input me-4" type="checkbox" role="switch" id="confettiSwitch">
+        </div>
+        <div id="confettiOptions"></div>
+
+
+       <!-- buttons -->
+        <div class="d-flex justify-content-between align-items-center ms-5 me-5 mt-4">
+            <button type="button" id="applyButton" class="btn btn-outline-primary btn-sm ms-3">Apply</button>
+            <button type="button" id="resetButton" class="btn btn-outline-danger btn-sm ms-3 me-3">Reset</button>
+        </div>
+        <div class="text-center mt-5">Refresh the page to see changes</div>
+    </main>
+    <footer class="fixed-bottom d-flex justify-content-center align-items-center shadow text-secondary mt-auto border-top bg-light">
+        <div>Nathaniel Wilson &nbsp; - &nbsp; <a class="text-reset" href="https://github.com/nthnlwilson/LS-confetti-extension">GitHub</a></div>
+    </footer>
+  <script src="popup.js"></script>
+</body>
+</html>

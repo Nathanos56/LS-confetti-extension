@@ -108,8 +108,8 @@ applyButton.addEventListener('click', (event) => {
     });
 
     // tell confetti.js which profile to use
-    chrome.storage.sync.set({selectedProfile: profileName}, function() {
-        console.log('Selected profile is set to ' + profileName);
+    chrome.storage.sync.set({selectedProfile: selectedProfile}, function() {
+        console.log('Selected profile is set to ' + selectedProfile);
     });
 });
 
@@ -205,6 +205,7 @@ function addSwitchEventListeners() {
         const parentId = "snowOptions";
         if(event.target.checked) {
             uncheckSwitches("snowSwitch");
+            selectedProfile = "snow";
 
             // createSliders(parentId, labelText, sliderId, min, max, step)
             // add time
@@ -219,6 +220,7 @@ function addSwitchEventListeners() {
         const parentId = "fireworkOptions";
         if(event.target.checked) {
             uncheckSwitches("fireworkSwitch");
+            selectedProfile = "fireworks";
 
             // createSliders(parentId, labelText, sliderId, min, max, step)
             // add time
@@ -236,6 +238,7 @@ function addSwitchEventListeners() {
         const parentId = "woolOptions";
         if(event.target.checked) {
             uncheckSwitches("woolSwitch");
+            selectedProfile = "steelWool";
 
             // // createSliders(parentId, labelText, sliderId, min, max, step)
             // createSliders(parentId, "Particle Count", "particleSlider", 10, 500, 10);
@@ -258,6 +261,7 @@ function addSwitchEventListeners() {
         const parentId = "confettiOptions";
         if(event.target.checked) {
             uncheckSwitches("confettiSwitch");
+            selectedProfile = "confetti";
 
             // createSliders(parentId, labelText, sliderId, min, max, step)
             createSliders(parentId, "Particle Count", "particleSlider", 10, 500, 10);

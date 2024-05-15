@@ -149,29 +149,46 @@ function snow(profileSettings) {
 
 // splitting this into its own function lets the user test settings without refreshing the page
 function getSettings() {
-    chrome.storage.sync.get('selectedProfile', function(data) {
-        let selectedProfile = data.selectedProfile;
+    return new Promise((resolve, reject) => {
+        chrome.storage.sync.get('selectedProfile', function(data) {
+            let selectedProfile = data.selectedProfile;
 
-        // gets the profiles object
-        chrome.storage.sync.get('profiles', function(data) {
-            let profiles = data.profiles || {};
-            return profiles[selectedProfile] || {}; //returns profileSettings
+            // gets the profiles object
+            chrome.storage.sync.get('profiles', function(data) {
+                let profiles = data.profiles || {};
+                resolve(profiles[selectedProfile] || {}); //returns profileSettings
+            });
         });
     });
 }
 
-window.onload = function() {
+
+window.onload = async function() {
     // console.log('%cinside dom event listener', 'color: green; font-weight: bold;');
     const LSSubmit = '[data-v-625658].text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
     const LSCheckOff = '[data-v--363100].float-right.ml-2.w-28.text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
     
-    let profileSettings = getSettings();
+    let profileSettings;
+
+    try {
+        profileSettings = await getSettings();
+        // use profileSettings here
+    } catch (error) {
+        console.error('An error occurred with getSettings:', error);
+    }
+
     let checkOffEnabled = profileSettings["checkOffSwitch"] || false;
     attachClickListener(); //initial attach
   
     const handleClick = async (event) => {
         // console.log('%cbutton pressed', 'color: green; font-weight: bold;');
-        profileSettings = getSettings();
+        try {
+            profileSettings = await getSettings();
+            // use profileSettings here
+        } catch (error) {
+            console.error('An error occurred with getSettings:', error);
+        }
+        
         checkOffEnabled = profileSettings["checkOffSwitch"] || false;
         
         let confettiType = profileSettings["selectedProfile"] || "confetti";
