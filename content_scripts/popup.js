@@ -23,6 +23,7 @@ const resetButton = document.getElementById('resetButton');
 // const testButton = document.getElementById('testButton'); // can't use a test button without giving the extension access to every webpage
 
 let selectedProfile = null;
+let profiles = {};
 
 window.onload = function() {
     // Get the selected profile name
@@ -35,15 +36,13 @@ window.onload = function() {
         } else {
             // Get the profiles object
             chrome.storage.sync.get('profiles', function(data) {
-                let profiles = data.profiles;
+                profiles = data.profiles;
                 let profileSettings = profiles[selectedProfile];
                 getSavedSettings(profileSettings);
             });
         }
     });
 
-
-    // add event listeners to switches
     addSwitchEventListeners();
 }
 
@@ -78,8 +77,6 @@ function getSavedSettings(settings) {
 
 
 // profiles are so poeple can adjust the defaults and save their work
-var profiles = {}; // all profiles
-
 applyButton.addEventListener('click', (event) => {
     var profile = {}; // current profile settings
 
@@ -238,7 +235,7 @@ function addSwitchEventListeners() {
     woolSwitch.addEventListener('change', (event) => {
         const parentId = "woolOptions";
         if(event.target.checked) {
-            // uncheckSwitches("woolSwitch");
+            uncheckSwitches("woolSwitch");
 
             // // createSliders(parentId, labelText, sliderId, min, max, step)
             // createSliders(parentId, "Particle Count", "particleSlider", 10, 500, 10);
@@ -282,7 +279,11 @@ function addSwitchEventListeners() {
 
 function uncheckSwitches(targetSwitch) {
     const switches = document.querySelectorAll(`[role="switch"]:not(#checkOffSwitch):not(#${targetSwitch})`);
-    switches.forEach(sw => sw.checked = false);
+    switches.forEach(sw => {
+        sw.checked = false;
+        sw.dispatchEvent(new Event('change'));
+    });
+    
 }
 
 // show when sliders are disabled

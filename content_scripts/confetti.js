@@ -3,7 +3,6 @@
 // add css animations in the popup
 // change default color of the color pickers in popup.js
 // create steelwool effect
-// popup.js automatically empties the profiles here:  var profiles = {};     instead, get the profiles from storage
 
 
 import confetti from 'canvas-confetti';
