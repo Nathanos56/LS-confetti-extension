@@ -1059,19 +1059,19 @@ function fireworks(profileSettings) {
   var MyparticleCount = profileSettings['particleSlider'] || 150;
   var duration = inputTime * 1000;
   var animationEnd = Date.now() + duration;
-  var settings = {
-    velocity: profileSettings['velocitySlider'] || 30,
-    spread: profileSettings['spreadSlider'] || 360,
-    ticks: profileSettings['tickSlider'] || 60,
-    zIndex: 0,
-    colors: [profileSettings['colorSelector1'] || '#f00', profileSettings['colorSelector2'] || '#00f', profileSettings['colorSelector3'] || '#0f0'],
-    particleCount: MyparticleCount * (timeLeft / duration) //this fades out the fireworks
-  };
   function randomInRange(min, max) {
     return Math.random() * (max - min) + min;
   }
   var interval = setInterval(function () {
     var timeLeft = animationEnd - Date.now();
+    var settings = {
+      velocity: profileSettings['velocitySlider'] || 30,
+      spread: profileSettings['spreadSlider'] || 360,
+      ticks: profileSettings['tickSlider'] || 60,
+      zIndex: 0,
+      colors: [profileSettings['colorSelector1'] || '#f00', profileSettings['colorSelector2'] || '#00f', profileSettings['colorSelector3'] || '#0f0'],
+      particleCount: MyparticleCount * (timeLeft / duration) //this fades out the fireworks
+    };
     if (timeLeft <= 0) {
       return clearInterval(interval);
     }
@@ -1124,21 +1124,24 @@ function snow(profileSettings) {
 }
 
 // splitting this into its own function lets the user test settings without refreshing the page
-function getSettings() {
+function getSelectedProfile() {
   return new Promise(function (resolve, reject) {
     chrome.storage.sync.get('selectedProfile', function (data) {
-      var selectedProfile = data.selectedProfile;
-
-      // gets the profiles object
-      chrome.storage.sync.get('profiles', function (data) {
-        var profiles = data.profiles || {};
-        resolve(profiles[selectedProfile] || {}); //returns profileSettings
-      });
+      resolve(data.selectedProfile || 'confetti');
+    });
+  });
+}
+function getSettings(selectedProfile) {
+  return new Promise(function (resolve, reject) {
+    // gets the profiles object
+    chrome.storage.sync.get('profiles', function (data) {
+      var profiles = data.profiles || {};
+      resolve(profiles[selectedProfile] || {}); //returns profileSettings
     });
   });
 }
 window.onload = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-  var attachClickListener, LSSubmit, LSCheckOff, profileSettings, checkOffEnabled, handleClick, observer;
+  var attachClickListener, LSSubmit, LSCheckOff, profileSettings, selectedProfile, checkOffEnabled, handleClick, observer;
   return _regeneratorRuntime().wrap(function _callee2$(_context2) {
     while (1) switch (_context2.prev = _context2.next) {
       case 0:
@@ -1165,58 +1168,47 @@ window.onload = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime
         LSCheckOff = '[data-v--363100].float-right.ml-2.w-28.text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
         _context2.prev = 3;
         _context2.next = 6;
-        return getSettings();
+        return getSelectedProfile();
       case 6:
-        profileSettings = _context2.sent;
-        _context2.next = 12;
-        break;
+        selectedProfile = _context2.sent;
+        _context2.next = 9;
+        return getSettings(selectedProfile);
       case 9:
-        _context2.prev = 9;
+        profileSettings = _context2.sent;
+        _context2.next = 15;
+        break;
+      case 12:
+        _context2.prev = 12;
         _context2.t0 = _context2["catch"](3);
         console.error('An error occurred with getSettings:', _context2.t0);
-      case 12:
+      case 15:
         checkOffEnabled = profileSettings["checkOffSwitch"] || false;
         attachClickListener(); //initial attach
         handleClick = /*#__PURE__*/function () {
           var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(event) {
-            var confettiType;
             return _regeneratorRuntime().wrap(function _callee$(_context) {
               while (1) switch (_context.prev = _context.next) {
                 case 0:
-                  _context.prev = 0;
-                  _context.next = 3;
-                  return getSettings();
+                  _context.t0 = selectedProfile;
+                  _context.next = _context.t0 === "confetti" ? 3 : _context.t0 === "steelWool" ? 5 : _context.t0 === "fireworks" ? 7 : _context.t0 === "snow" ? 9 : 11;
+                  break;
                 case 3:
-                  profileSettings = _context.sent;
-                  _context.next = 9;
-                  break;
-                case 6:
-                  _context.prev = 6;
-                  _context.t0 = _context["catch"](0);
-                  console.error('An error occurred with getSettings:', _context.t0);
-                case 9:
-                  checkOffEnabled = profileSettings["checkOffSwitch"] || false;
-                  confettiType = profileSettings["selectedProfile"] || "confetti";
-                  _context.t1 = confettiType;
-                  _context.next = _context.t1 === "confetti" ? 14 : _context.t1 === "steelWool" ? 16 : _context.t1 === "fireworks" ? 18 : _context.t1 === "snow" ? 20 : 22;
-                  break;
-                case 14:
                   initialConfetti(profileSettings);
-                  return _context.abrupt("break", 22);
-                case 16:
+                  return _context.abrupt("break", 11);
+                case 5:
                   steelWool(profileSettings);
-                  return _context.abrupt("break", 22);
-                case 18:
+                  return _context.abrupt("break", 11);
+                case 7:
                   fireworks(profileSettings);
-                  return _context.abrupt("break", 22);
-                case 20:
+                  return _context.abrupt("break", 11);
+                case 9:
                   snow(profileSettings);
-                  return _context.abrupt("break", 22);
-                case 22:
+                  return _context.abrupt("break", 11);
+                case 11:
                 case "end":
                   return _context.stop();
               }
-            }, _callee, null, [[0, 6]]);
+            }, _callee);
           }));
           return function handleClick(_x) {
             return _ref2.apply(this, arguments);
@@ -1246,11 +1238,11 @@ window.onload = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime
         });
 
         // console.log('%cjs file loaded', 'color: green; font-weight: bold;');
-      case 17:
+      case 20:
       case "end":
         return _context2.stop();
     }
-  }, _callee2, null, [[3, 9]]);
+  }, _callee2, null, [[3, 12]]);
 }));
 
 // this was a test for submit buttons on all websites:

@@ -80,13 +80,6 @@ function fireworks(profileSettings) {
 
     var duration = inputTime * 1000;
     var animationEnd = Date.now() + duration;
-    var settings = { velocity: profileSettings['velocitySlider'] || 30,
-        spread: profileSettings['spreadSlider'] || 360,
-        ticks: profileSettings['tickSlider'] || 60,
-        zIndex: 0,
-        colors: [profileSettings['colorSelector1'] || '#f00', profileSettings['colorSelector2'] || '#00f', profileSettings['colorSelector3'] || '#0f0'],
-        particleCount: MyparticleCount * (timeLeft / duration) //this fades out the fireworks
-    };
 
     function randomInRange(min, max) {
         return Math.random() * (max - min) + min;
@@ -94,6 +87,14 @@ function fireworks(profileSettings) {
 
     var interval = setInterval(function() {
         var timeLeft = animationEnd - Date.now();
+
+        var settings = { velocity: profileSettings['velocitySlider'] || 30,
+            spread: profileSettings['spreadSlider'] || 360,
+            ticks: profileSettings['tickSlider'] || 60,
+            zIndex: 0,
+            colors: [profileSettings['colorSelector1'] || '#f00', profileSettings['colorSelector2'] || '#00f', profileSettings['colorSelector3'] || '#0f0'],
+            particleCount: MyparticleCount * (timeLeft / duration) //this fades out the fireworks
+        };
 
         if (timeLeft <= 0) {
             return clearInterval(interval);
@@ -148,16 +149,19 @@ function snow(profileSettings) {
 
 
 // splitting this into its own function lets the user test settings without refreshing the page
-function getSettings() {
+function getSelectedProfile() {
     return new Promise((resolve, reject) => {
         chrome.storage.sync.get('selectedProfile', function(data) {
-            let selectedProfile = data.selectedProfile;
-
-            // gets the profiles object
-            chrome.storage.sync.get('profiles', function(data) {
-                let profiles = data.profiles || {};
-                resolve(profiles[selectedProfile] || {}); //returns profileSettings
-            });
+            resolve(data.selectedProfile || 'confetti');
+        });
+    });
+}
+function getSettings(selectedProfile) {
+    return new Promise((resolve, reject) => {
+        // gets the profiles object
+        chrome.storage.sync.get('profiles', function(data) {
+            let profiles = data.profiles || {};
+            resolve(profiles[selectedProfile] || {}); //returns profileSettings
         });
     });
 }
@@ -187,31 +191,20 @@ window.onload = async function() {
     const LSCheckOff = '[data-v--363100].float-right.ml-2.w-28.text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
     
     let profileSettings;
-
+    let selectedProfile;
     try {
-        profileSettings = await getSettings();
-        // use profileSettings here
+        selectedProfile = await getSelectedProfile();
+        profileSettings = await getSettings(selectedProfile);
     } catch (error) {
         console.error('An error occurred with getSettings:', error);
     }
 
-    let checkOffEnabled = profileSettings["checkOffSwitch"] || false;
+    const checkOffEnabled = profileSettings["checkOffSwitch"] || false;
     attachClickListener(); //initial attach
   
     const handleClick = async (event) => {
-        // console.log('%cbutton pressed', 'color: green; font-weight: bold;');
-        try {
-            profileSettings = await getSettings();
-            // use profileSettings here
-        } catch (error) {
-            console.error('An error occurred with getSettings:', error);
-        }
-
-        checkOffEnabled = profileSettings["checkOffSwitch"] || false;
-        
-        let confettiType = profileSettings["selectedProfile"] || "confetti";
-        
-        switch(confettiType) {
+        // console.log('%cbutton pressed. confettiType: ' + selectedProfile, 'color: green; font-weight: bold;');
+        switch(selectedProfile) { // no need for default
             case "confetti":
                 initialConfetti(profileSettings);
                 break;
@@ -224,8 +217,6 @@ window.onload = async function() {
             case "snow":
                 snow(profileSettings);
                 break;
-            default:
-                initialConfetti();
         }
     };
   

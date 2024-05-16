@@ -8398,7 +8398,7 @@ var profiles = {};
 window.onload = function () {
   // Get the selected profile name
   chrome.storage.sync.get('selectedProfile', function (data) {
-    var selectedProfile = data.selectedProfile;
+    selectedProfile = data.selectedProfile || 'confetti';
 
     // If selectedProfile doesn't exist, use defaultVals
     if (!selectedProfile) {
@@ -8413,6 +8413,50 @@ window.onload = function () {
     }
   });
   addSwitchEventListeners();
+
+  // profiles are so poeple can adjust the defaults and save their work
+  applyButton.addEventListener('click', function (event) {
+    var profile = {}; // current profile settings
+
+    // switches
+    var switches = document.querySelectorAll('[role="switch"]');
+    switches.forEach(function (mySwitch) {
+      profile[mySwitch.id] = mySwitch.checked;
+    });
+
+    // sliders
+    var sliders = document.querySelectorAll('.form-range');
+    sliders.forEach(function (slider) {
+      var sliderValue = document.getElementById(slider.id + 'Value').textContent;
+      profile[slider.id] = sliderValue;
+    });
+
+    // color inputs
+    var colorInputs = document.querySelectorAll('.form-control-color');
+    colorInputs.forEach(function (colorInput) {
+      profile[colorInput.id] = colorInput.value;
+    });
+
+    // Save the profile to the profiles object
+    profiles[selectedProfile] = profile;
+
+    // Save the profiles object to chrome storage
+    chrome.storage.sync.set({
+      profiles: profiles
+    }, function () {
+      console.log('Profiles saved');
+    });
+
+    // tell confetti.js which profile to use
+    chrome.storage.sync.set({
+      selectedProfile: selectedProfile
+    }, function () {
+      console.log('Selected profile is set to ' + selectedProfile);
+    });
+  });
+  resetButton.addEventListener('click', function (event) {
+    getSavedSettings(defaultVals);
+  });
 };
 function getSavedSettings(settings) {
   // real time range sliders
@@ -8437,53 +8481,10 @@ function getSavedSettings(settings) {
   colorInputs.forEach(function (colorInput) {
     colorInput.value = settings[colorInput.id] || defaultVals[colorInput.id] || '#808080';
   });
-  selectedProfile = settings["selectedProfile"] || "confetti";
+
+  // selectedProfile = settings["selectedProfile"] || "confetti";
 }
 ;
-
-// profiles are so poeple can adjust the defaults and save their work
-applyButton.addEventListener('click', function (event) {
-  var profile = {}; // current profile settings
-
-  // switches
-  var switches = document.querySelectorAll('[role="switch"]');
-  switches.forEach(function (mySwitch) {
-    profile[mySwitch.id] = mySwitch.checked;
-  });
-
-  // sliders
-  var sliders = document.querySelectorAll('.form-range');
-  sliders.forEach(function (slider) {
-    var sliderValue = document.getElementById(slider.id + 'Value').textContent;
-    profile[slider.id] = sliderValue;
-  });
-
-  // color inputs
-  var colorInputs = document.querySelectorAll('.form-control-color');
-  colorInputs.forEach(function (colorInput) {
-    profile[colorInput.id] = colorInput.value;
-  });
-
-  // Save the profile to the profiles object
-  profiles[selectedProfile] = profile;
-
-  // Save the profiles object to chrome storage
-  chrome.storage.sync.set({
-    profiles: profiles
-  }, function () {
-    console.log('Profiles saved');
-  });
-
-  // tell confetti.js which profile to use
-  chrome.storage.sync.set({
-    selectedProfile: selectedProfile
-  }, function () {
-    console.log('Selected profile is set to ' + selectedProfile);
-  });
-});
-resetButton.addEventListener('click', function (event) {
-  getSavedSettings(defaultVals);
-});
 function createSliders(parentId, labelText, sliderId, min, max, step) {
   var parentElement = document.getElementById(parentId);
   var newDiv = document.createElement("div");
