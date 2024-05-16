@@ -3,11 +3,10 @@ button {
     margin-top: 5px;
 }
 
-html {
+body {
     width: 450px; /* max: 800px */
     height: 600px; /* max: 600px more than this will cause a scrollbar */ 
 }
-
 
 footer {
     min-height: 50px;

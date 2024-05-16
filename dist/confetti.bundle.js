@@ -1095,7 +1095,7 @@ function snow(profileSettings) {
   var inputTime = profileSettings['timeSlider'] || 5;
   var duration = inputTime * 1000;
   var animationEnd = Date.now() + duration;
-  var skew = 1;
+  var skew = profileSettings['skewSlider'] || 1;
   function randomInRange(min, max) {
     return Math.random() * (max - min) + min;
   }

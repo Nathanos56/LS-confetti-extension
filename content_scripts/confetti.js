@@ -1,8 +1,9 @@
 
 // toDo:
 // add css animations in the popup
-// change default color of the color pickers in popup.js
 // create steelwool effect
+// firework colors are wrong
+// effects are not happening
 
 
 import confetti from 'canvas-confetti';
@@ -111,7 +112,7 @@ function snow(profileSettings) {
 
     var duration = inputTime * 1000;
     var animationEnd = Date.now() + duration;
-    var skew = 1;
+    var skew = profileSettings['skewSlider'] || 1;
 
     function randomInRange(min, max) {
         return Math.random() * (max - min) + min;

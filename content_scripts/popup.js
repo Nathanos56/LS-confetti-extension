@@ -17,6 +17,26 @@ const defaultVals = {
     "colorSelector2": "#0000ff",
     "colorSelector3": "#00ff00"
 }
+const defaultSnow = {
+    "timeSlider": 5,
+    "skewSlider": 1,
+    "tickSlider": 200,
+    "particleSlider": 150,
+    "colorSelector1": '#ffffff',
+    "colorSelector2": '#ffffff',
+    "colorSelector3": '#ffffff'
+}
+const defaultFireworks = {
+    "timeSlider": 5,
+    "particleSlider": 150,
+    "velocitySlider": 30,
+    "spreadSlider": 360,
+    "tickSlider": 60,
+    "colorSelector1": '#f00',
+    "colorSelector2": '#00f',
+    "colorSelector3": '#0f0'
+}
+const defaultWool = { }
 
 const applyButton = document.getElementById('applyButton');
 const resetButton = document.getElementById('resetButton');
@@ -89,8 +109,15 @@ window.onload = function() {
 }
 
 
+// this also resets the other switches
+function getSavedSettings(settings, targetSwitch) {
+    // show switch states
+    const switches = document.querySelectorAll(`[role="switch"]:not(#checkOffSwitch):not(#${targetSwitch})`);
+    switches.forEach(function(mySwitch) {
+        mySwitch.checked = settings[mySwitch.id] || false;
+        mySwitch.dispatchEvent(new Event('change'));
+    });
 
-function getSavedSettings(settings) {
     // real time range sliders
     var sliders = document.querySelectorAll('.form-range');
     sliders.forEach(function(slider) {
@@ -102,16 +129,10 @@ function getSavedSettings(settings) {
         slider.dispatchEvent(new Event('input'));
     });
 
-    // show switch states
-    var switches = document.querySelectorAll('[role="switch"]');
-    switches.forEach(function(mySwitch) {
-        mySwitch.checked = settings[mySwitch.id] || false;
-    });
-
     // show color input states
     var colorInputs = document.querySelectorAll('.form-control-color');
     colorInputs.forEach(function(colorInput) {
-        colorInput.value = settings[colorInput.id] || defaultVals[colorInput.id] || '#808080';
+        colorInput.value = (settings && settings[colorInput.id]) || defaultVals[colorInput.id] || '#808080';
     });
 };
 
@@ -177,6 +198,7 @@ function createColorInputs(parentId, labelText, colorSelectorIds) {
         newInput.className = "form-control form-control-color";
         newInput.type = "color";
         newInput.id = colorSelectorIds[i];
+        // newInput.value = (settings && settings[colorInput.id]) || defaultVals[colorInput.id] || '#808080';
         colorContainer.appendChild(newInput);
     };
 
@@ -192,54 +214,42 @@ function deleteSwitchSettings(parentId) {
 
 
 
-
 function addSwitchEventListeners() {
     const snowSwitch = document.getElementById('snowSwitch');
     const fireworkSwitch = document.getElementById('fireworkSwitch');
     const woolSwitch = document.getElementById('woolSwitch');
     const confettiSwitch = document.getElementById('confettiSwitch');
+    const colorSelectorIds = ["colorSelector1", "colorSelector2", "colorSelector3"];
 
     // comment out the lines for the sliders that aren't needed
     snowSwitch.addEventListener('change', (event) => {
         const parentId = "snowOptions";
         if(event.target.checked) {
-            uncheckSwitches("snowSwitch");
-            selectedProfile = "snow";
-
-            // createSliders(parentId, labelText, sliderId, min, max, step)
             // add time
             createSliders(parentId, "Ticks", "tickSlider", 0, 500, 10);
             
-            // createColorInputs(parentId, labelText, colorSelectorIds)
-            createColorInputs(parentId, "Snow Colors", ["colorSelector1", "colorSelector2", "colorSelector3"]);
+            createColorInputs(parentId, "Snow Colors", colorSelectorIds);
+            getSavedSettings(defaultSnow, "snowSwitch");
         } else { deleteSwitchSettings(parentId) };
     });
 
     fireworkSwitch.addEventListener('change', (event) => {
         const parentId = "fireworkOptions";
         if(event.target.checked) {
-            uncheckSwitches("fireworkSwitch");
-            selectedProfile = "fireworks";
-
-            // createSliders(parentId, labelText, sliderId, min, max, step)
             // add time
             createSliders(parentId, "Particle Count", "particleSlider", 10, 500, 10);
             createSliders(parentId, "Initial Velocity", "velocitySlider", 10, 100, 5);
             createSliders(parentId, "Spread", "spreadSlider", 10, 360, 10);
             createSliders(parentId, "Ticks", "tickSlider", 0, 500, 10);
 
-            // createColorInputs(parentId, labelText, colorSelectorIds)
-            createColorInputs(parentId, "Firework Colors", ["colorSelector1", "colorSelector2", "colorSelector3"]);
+            createColorInputs(parentId, "Firework Colors", colorSelectorIds);
+            getSavedSettings(defaultFireworks, "fireworkSwitch");
         } else { deleteSwitchSettings(parentId) };
     });
 
     woolSwitch.addEventListener('change', (event) => {
         const parentId = "woolOptions";
         if(event.target.checked) {
-            uncheckSwitches("woolSwitch");
-            selectedProfile = "steelWool";
-
-            // // createSliders(parentId, labelText, sliderId, min, max, step)
             // createSliders(parentId, "Particle Count", "particleSlider", 10, 500, 10);
             // createSliders(parentId, "Angle", "angleSlider", 0, 180, 5);
             // createSliders(parentId, "Spread", "spreadSlider", 10, 360, 10);
@@ -251,17 +261,14 @@ function addSwitchEventListeners() {
             // createSliders(parentId, "Particle Size", "particleSizeSlider", .2, 5, .1);
             // createSliders(parentId, "Random Bursts", "burstSlider", 0, 20, 1);
 
-            // // createColorInputs(parentId, labelText, colorSelectorIds)
-            // createColorInputs(parentId, "Spark Colors", ["colorSelector1", "colorSelector2", "colorSelector3"]);
+            // createColorInputs(parentId, "Spark Colors", colorSelectorIds);
+            getSavedSettings(defaultWool, "woolSwitch");
         } else { deleteSwitchSettings(parentId) };
     });
 
     confettiSwitch.addEventListener('change', (event) => {
         const parentId = "confettiOptions";
         if(event.target.checked) {
-            uncheckSwitches("confettiSwitch");
-            selectedProfile = "confetti";
-
             // createSliders(parentId, labelText, sliderId, min, max, step)
             createSliders(parentId, "Particle Count", "particleSlider", 10, 500, 10);
             createSliders(parentId, "Angle", "angleSlider", 0, 180, 5);
@@ -275,19 +282,13 @@ function addSwitchEventListeners() {
             createSliders(parentId, "Random Bursts", "burstSlider", 0, 20, 1);
 
             // createColorInputs(parentId, labelText, colorSelectorIds)
-            createColorInputs(parentId, "Confetti Colors", ["colorSelector1", "colorSelector2", "colorSelector3"]);
+            createColorInputs(parentId, "Confetti Colors", colorSelectorIds);
+            getSavedSettings(defaultVals, "confettiSwitch");
         } else { deleteSwitchSettings(parentId) };
     });
 }
 
-function uncheckSwitches(targetSwitch) {
-    const switches = document.querySelectorAll(`[role="switch"]:not(#checkOffSwitch):not(#${targetSwitch})`);
-    switches.forEach(sw => {
-        sw.checked = false;
-        sw.dispatchEvent(new Event('change'));
-    });
-    
-}
+
 
 // show when sliders are disabled
 
