@@ -1,7 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -42,16 +41,8 @@ module.exports = {
       ],
     }),
   ],
-  // mode: 'production',
   // comment this out for deployment
+  // mode: 'production',
   mode: 'development',
-  optimization: {
-    minimizer: [
-      new TerserPlugin({
-        terserOptions: {
-          keep_fnames: true,
-        },
-      }),
-    ],
-  },
+  devtool: 'source-map',
 };

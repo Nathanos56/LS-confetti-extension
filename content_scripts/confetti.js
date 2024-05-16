@@ -162,8 +162,26 @@ function getSettings() {
     });
 }
 
-
 window.onload = async function() {
+
+    const attachClickListener = function() {
+        let submitButtons = Array.from(document.querySelectorAll(LSSubmit));
+        if (checkOffEnabled) { 
+            let buttons = document.querySelectorAll(LSCheckOff);
+            let checkOffButtons = Array.from(buttons).filter(button => {
+                let childDivs = button.querySelectorAll('div');
+                return Array.from(childDivs).some(div => div.textContent.includes('Check Off'));
+            });
+            submitButtons = submitButtons.concat(checkOffButtons);
+        }
+        submitButtons.forEach(function (submitButton) {
+            if (!submitButton.hasClickListener) {
+                submitButton.addEventListener('click', handleClick);
+                submitButton.hasClickListener = true;
+            }
+        });
+    };
+
     // console.log('%cinside dom event listener', 'color: green; font-weight: bold;');
     const LSSubmit = '[data-v-625658].text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
     const LSCheckOff = '[data-v--363100].float-right.ml-2.w-28.text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
@@ -188,7 +206,7 @@ window.onload = async function() {
         } catch (error) {
             console.error('An error occurred with getSettings:', error);
         }
-        
+
         checkOffEnabled = profileSettings["checkOffSwitch"] || false;
         
         let confettiType = profileSettings["selectedProfile"] || "confetti";
@@ -206,27 +224,11 @@ window.onload = async function() {
             case "snow":
                 snow(profileSettings);
                 break;
+            default:
+                initialConfetti();
         }
     };
   
-    const attachClickListener = function() {
-        let submitButtons = Array.from(document.querySelectorAll(LSSubmit));
-        if (checkOffEnabled) { 
-            let buttons = document.querySelectorAll(LSCheckOff);
-            let checkOffButtons = Array.from(buttons).filter(button => {
-                let childDivs = button.querySelectorAll('div');
-                return Array.from(childDivs).some(div => div.textContent.includes('Check Off'));
-            });
-            submitButtons = submitButtons.concat(checkOffButtons);
-        }
-        submitButtons.forEach(function (submitButton) {
-            if (!submitButton.hasClickListener) {
-                submitButton.addEventListener('click', handleClick);
-                submitButton.hasClickListener = true;
-            }
-        });
-    };
-    
     // when the dom changes
     const observer = new MutationObserver((mutationsList, observer) => {
         for(let mutation of mutationsList) {
