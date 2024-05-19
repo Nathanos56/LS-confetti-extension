@@ -981,8 +981,9 @@ function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" 
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 // toDo:
 // add css animations in the popup
-// change default color of the color pickers in popup.js
 // create steelwool effect
+// fix reset button
+// get rid of profiles{}. flatten the tree
 
 
 function initialConfetti(profileSettings) {
@@ -1141,49 +1142,30 @@ function getSettings(selectedProfile) {
   });
 }
 window.onload = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-  var attachClickListener, LSSubmit, LSCheckOff, profileSettings, selectedProfile, checkOffEnabled, handleClick, observer;
+  var LSSubmit, LSCheckOff, profileSettings, selectedProfile, checkOffEnabled, handleClick, attachClickListener, observer;
   return _regeneratorRuntime().wrap(function _callee2$(_context2) {
     while (1) switch (_context2.prev = _context2.next) {
       case 0:
-        attachClickListener = function attachClickListener() {
-          var submitButtons = Array.from(document.querySelectorAll(LSSubmit));
-          if (checkOffEnabled) {
-            var buttons = document.querySelectorAll(LSCheckOff);
-            var checkOffButtons = Array.from(buttons).filter(function (button) {
-              var childDivs = button.querySelectorAll('div');
-              return Array.from(childDivs).some(function (div) {
-                return div.textContent.includes('Check Off');
-              });
-            });
-            submitButtons = submitButtons.concat(checkOffButtons);
-          }
-          submitButtons.forEach(function (submitButton) {
-            if (!submitButton.hasClickListener) {
-              submitButton.addEventListener('click', handleClick);
-              submitButton.hasClickListener = true;
-            }
-          });
-        }; // console.log('%cinside dom event listener', 'color: green; font-weight: bold;');
+        // console.log('%cinside dom event listener', 'color: green; font-weight: bold;');
         LSSubmit = '[data-v-625658].text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
         LSCheckOff = '[data-v--363100].float-right.ml-2.w-28.text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
-        _context2.prev = 3;
-        _context2.next = 6;
+        _context2.prev = 2;
+        _context2.next = 5;
         return getSelectedProfile();
-      case 6:
+      case 5:
         selectedProfile = _context2.sent;
-        _context2.next = 9;
+        _context2.next = 8;
         return getSettings(selectedProfile);
-      case 9:
+      case 8:
         profileSettings = _context2.sent;
-        _context2.next = 15;
+        _context2.next = 14;
         break;
-      case 12:
-        _context2.prev = 12;
-        _context2.t0 = _context2["catch"](3);
+      case 11:
+        _context2.prev = 11;
+        _context2.t0 = _context2["catch"](2);
         console.error('An error occurred with getSettings:', _context2.t0);
-      case 15:
+      case 14:
         checkOffEnabled = profileSettings["checkOffSwitch"] || false;
-        attachClickListener(); //initial attach
         handleClick = /*#__PURE__*/function () {
           var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(event) {
             return _regeneratorRuntime().wrap(function _callee$(_context) {
@@ -1213,7 +1195,33 @@ window.onload = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime
           return function handleClick(_x) {
             return _ref2.apply(this, arguments);
           };
-        }(); // when the dom changes
+        }();
+        attachClickListener = function attachClickListener() {
+          var submitButtons = Array.from(document.querySelectorAll(LSSubmit));
+          // console.log('Submit buttons:', submitButtons);
+          if (checkOffEnabled) {
+            // console.log('check Off is Enabled');
+            var buttons = document.querySelectorAll(LSCheckOff);
+            var checkOffButtons = Array.from(buttons).filter(function (button) {
+              var childDivs = button.querySelectorAll('div');
+              // console.log('check Off button added');
+              return Array.from(childDivs).some(function (div) {
+                return div.textContent.includes('Check Off');
+              });
+            });
+            submitButtons = submitButtons.concat(checkOffButtons);
+          }
+          submitButtons.forEach(function (submitButton) {
+            if (!submitButton.hasClickListener) {
+              submitButton.addEventListener('click', handleClick);
+              submitButton.hasClickListener = true;
+              // console.log(submitButton + '%c: submit button listener attached', 'color: green; font-weight: bold;');
+            }
+          });
+        };
+        attachClickListener(); //initial attach
+
+        // when the dom changes
         observer = new MutationObserver(function (mutationsList, observer) {
           var _iterator = _createForOfIteratorHelper(mutationsList),
             _step;
@@ -1242,7 +1250,7 @@ window.onload = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime
       case "end":
         return _context2.stop();
     }
-  }, _callee2, null, [[3, 12]]);
+  }, _callee2, null, [[2, 11]]);
 }));
 
 // this was a test for submit buttons on all websites:

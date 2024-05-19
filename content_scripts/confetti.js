@@ -2,8 +2,8 @@
 // toDo:
 // add css animations in the popup
 // create steelwool effect
-// firework colors are wrong
-// effects are not happening
+// fix reset button
+// get rid of profiles{}. flatten the tree
 
 
 import confetti from 'canvas-confetti';
@@ -169,24 +169,6 @@ function getSettings(selectedProfile) {
 
 window.onload = async function() {
 
-    const attachClickListener = function() {
-        let submitButtons = Array.from(document.querySelectorAll(LSSubmit));
-        if (checkOffEnabled) { 
-            let buttons = document.querySelectorAll(LSCheckOff);
-            let checkOffButtons = Array.from(buttons).filter(button => {
-                let childDivs = button.querySelectorAll('div');
-                return Array.from(childDivs).some(div => div.textContent.includes('Check Off'));
-            });
-            submitButtons = submitButtons.concat(checkOffButtons);
-        }
-        submitButtons.forEach(function (submitButton) {
-            if (!submitButton.hasClickListener) {
-                submitButton.addEventListener('click', handleClick);
-                submitButton.hasClickListener = true;
-            }
-        });
-    };
-
     // console.log('%cinside dom event listener', 'color: green; font-weight: bold;');
     const LSSubmit = '[data-v-625658].text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
     const LSCheckOff = '[data-v--363100].float-right.ml-2.w-28.text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
@@ -201,8 +183,7 @@ window.onload = async function() {
     }
 
     const checkOffEnabled = profileSettings["checkOffSwitch"] || false;
-    attachClickListener(); //initial attach
-  
+
     const handleClick = async (event) => {
         // console.log('%cbutton pressed. confettiType: ' + selectedProfile, 'color: green; font-weight: bold;');
         switch(selectedProfile) { // no need for default
@@ -220,7 +201,31 @@ window.onload = async function() {
                 break;
         }
     };
-  
+
+    const attachClickListener = function() {
+        let submitButtons = Array.from(document.querySelectorAll(LSSubmit));
+        // console.log('Submit buttons:', submitButtons);
+        if (checkOffEnabled) { 
+            // console.log('check Off is Enabled');
+            let buttons = document.querySelectorAll(LSCheckOff);
+            let checkOffButtons = Array.from(buttons).filter(button => {
+                let childDivs = button.querySelectorAll('div');
+                // console.log('check Off button added');
+                return Array.from(childDivs).some(div => div.textContent.includes('Check Off'));
+            });
+            submitButtons = submitButtons.concat(checkOffButtons);
+        }
+        submitButtons.forEach(function (submitButton) {
+            if (!submitButton.hasClickListener) {
+                submitButton.addEventListener('click', handleClick);
+                submitButton.hasClickListener = true;
+                // console.log(submitButton + '%c: submit button listener attached', 'color: green; font-weight: bold;');
+            }
+        });
+    };
+
+    attachClickListener(); //initial attach
+
     // when the dom changes
     const observer = new MutationObserver((mutationsList, observer) => {
         for(let mutation of mutationsList) {
@@ -234,7 +239,6 @@ window.onload = async function() {
   
     // console.log('%cjs file loaded', 'color: green; font-weight: bold;');
 };
-
 
 
 

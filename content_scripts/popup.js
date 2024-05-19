@@ -3,6 +3,7 @@ import './popup.css';
 import 'bootstrap';
 
 const defaultVals = {
+    "confettiSwitch": true,
     "particleSlider": 150,
     "angleSlider": 90,
     "spreadSlider": 270,
@@ -22,9 +23,7 @@ const defaultSnow = {
     "skewSlider": 1,
     "tickSlider": 200,
     "particleSlider": 150,
-    "colorSelector1": '#ffffff',
-    "colorSelector2": '#ffffff',
-    "colorSelector3": '#ffffff'
+    "colorSelector1": '#ffffff'
 }
 const defaultFireworks = {
     "timeSlider": 5,
@@ -32,9 +31,9 @@ const defaultFireworks = {
     "velocitySlider": 30,
     "spreadSlider": 360,
     "tickSlider": 60,
-    "colorSelector1": '#f00',
-    "colorSelector2": '#00f',
-    "colorSelector3": '#0f0'
+    "colorSelector1": '#ff0000',
+    "colorSelector2": '#0000ff',
+    "colorSelector3": '#00ff00'
 }
 const defaultWool = { }
 
@@ -48,18 +47,14 @@ let profiles = {};
 window.onload = function() {
     // Get the selected profile name
     chrome.storage.sync.get('selectedProfile', function(data) {
-        selectedProfile = data.selectedProfile || 'confetti';
-
-        // If selectedProfile doesn't exist, use defaultVals
-        if (!selectedProfile) {
-            getSavedSettings(defaultVals);
-        } else {
-            // Get the profiles object
-            chrome.storage.sync.get('profiles', function(data) {
-                profiles = data.profiles;
-                let profileSettings = profiles[selectedProfile];
-                getSavedSettings(profileSettings);
+        selectedProfile = data.selectedProfile;
+        if (selectedProfile) {
+            getSavedSettings(selectedProfile, function(profileSettings) {
+                updateInputs(profileSettings);
             });
+        } else {
+            selectedProfile = "confetti";
+            updateInputs(defaultVals);
         }
     });
 
@@ -67,53 +62,90 @@ window.onload = function() {
 
     // profiles are so poeple can adjust the defaults and save their work
     applyButton.addEventListener('click', (event) => {
-        var profile = {}; // current profile settings
+        chrome.storage.sync.get('profiles', function(data) { 
+            profiles = data.profiles || { };
+        
+            let profile = {}; // current profile settings
 
-        // switches
-        var switches = document.querySelectorAll('[role="switch"]');
-        switches.forEach(function(mySwitch) {
-            profile[mySwitch.id] = mySwitch.checked;
+            // switches
+            const switches = document.querySelectorAll('[role="switch"]');
+            switches.forEach(function(mySwitch) {
+                profile[mySwitch.id] = mySwitch.checked;
+            });
+
+            // sliders
+            const sliders = document.querySelectorAll('.form-range');
+            sliders.forEach(function(slider) {
+                var sliderValue = document.getElementById(slider.id + 'Value').textContent;
+                profile[slider.id] = sliderValue;
+            });
+
+            // color inputs
+            const colorInputs = document.querySelectorAll('.form-control-color');
+            colorInputs.forEach(function(colorInput) {
+                profile[colorInput.id] = colorInput.value;
+            });
+
+            // Save the profile to the profiles object
+            profiles[selectedProfile] = profile;
+
+            // Save the profiles object to chrome storage
+            chrome.storage.sync.set({profiles: profiles}, function() {
+                console.log('Profiles saved');
+            });
+
+            // tell confetti.js which profile to use
+            chrome.storage.sync.set({selectedProfile: selectedProfile}, function() {
+                console.log('Selected profile is set to ' + selectedProfile);
+            });
         });
-
-        // sliders
-        var sliders = document.querySelectorAll('.form-range');
-        sliders.forEach(function(slider) {
-            var sliderValue = document.getElementById(slider.id + 'Value').textContent;
-            profile[slider.id] = sliderValue;
-        });
-
-        // color inputs
-        var colorInputs = document.querySelectorAll('.form-control-color');
-        colorInputs.forEach(function(colorInput) {
-            profile[colorInput.id] = colorInput.value;
-        });
-
-        // Save the profile to the profiles object
-        profiles[selectedProfile] = profile;
-
-        // Save the profiles object to chrome storage
-        chrome.storage.sync.set({profiles: profiles}, function() {
-            console.log('Profiles saved');
-        });
-
-        // tell confetti.js which profile to use
-        chrome.storage.sync.set({selectedProfile: selectedProfile}, function() {
-            console.log('Selected profile is set to ' + selectedProfile);
-        });
-    });
+    }); 
 
     resetButton.addEventListener('click', (event) => {
-        getSavedSettings(defaultVals)
+        console.log("reset button pressed");
+        const switches = document.querySelectorAll('[role="switch"]:not(#checkOffSwitch)');
+        switches.forEach(function(mySwitch) {
+            if (mySwitch.checked) {
+                console.log("the switch being reset: ", mySwitch.id);
+                switch(mySwitch.id) {
+                    case "confettiSwitch":
+                        updateInputs(defaultVals, "confettiSwitch", "checkOffSwitch");
+                        break;
+                    case "woolSwitch":
+                        // updateInputs(defaultVals, "woolSwitch", "checkOffSwitch");
+                        break;
+                    case "fireworkSwitch":
+                        updateInputs(defaultFireworks, "fireworkSwitch", "checkOffSwitch");
+                        break;
+                    case "snowSwitch":
+                        updateInputs(defaultSnow, "snowSwitch", "checkOffSwitch");
+                        break;
+                }
+            }
+        });
     });
+}
 
+function getSavedSettings(profileName, callback) {
+    // Get the profiles object
+    chrome.storage.sync.get('profiles', function(data) {
+        profiles = data.profiles;
+        if (profiles) {
+            console.log('profiles:', profiles);
+            callback(profiles[profileName]);
+        } else {
+            callback(null);
+        }
+    }); 
 }
 
 
 // this also resets the other switches
-function getSavedSettings(settings, targetSwitch) {
+function updateInputs(settings, targetSwitch, checkOffSwitch) {
     // show switch states
-    const switches = document.querySelectorAll(`[role="switch"]:not(#checkOffSwitch):not(#${targetSwitch})`);
+    const switches = document.querySelectorAll(`[role="switch"]:not(#${checkOffSwitch}):not(#${targetSwitch})`);
     switches.forEach(function(mySwitch) {
+        console.log("switch.id:", mySwitch.id);
         mySwitch.checked = settings[mySwitch.id] || false;
         mySwitch.dispatchEvent(new Event('change'));
     });
@@ -132,6 +164,7 @@ function getSavedSettings(settings, targetSwitch) {
     // show color input states
     var colorInputs = document.querySelectorAll('.form-control-color');
     colorInputs.forEach(function(colorInput) {
+        console.log('%csettings[colorInput.id]' + settings[colorInput.id], 'color: green; font-weight: bold;');
         colorInput.value = (settings && settings[colorInput.id]) || defaultVals[colorInput.id] || '#808080';
     });
 };
@@ -191,14 +224,18 @@ function createColorInputs(parentId, labelText, colorSelectorIds) {
     newForm.appendChild(newLabel);
 
     var colorContainer = document.createElement("div");
-    colorContainer.className = "d-flex justify-content-between ms-4 me-4";
+    if (colorSelectorIds.length > 1) {
+        colorContainer.className = "d-flex justify-content-between ms-4 me-4";
+    } else {
+        colorContainer.className = "d-flex justify-content-center";
+    }
+    
 
     for (var i = 0; i < colorSelectorIds.length; ++i) {
         var newInput = document.createElement("input");
         newInput.className = "form-control form-control-color";
         newInput.type = "color";
         newInput.id = colorSelectorIds[i];
-        // newInput.value = (settings && settings[colorInput.id]) || defaultVals[colorInput.id] || '#808080';
         colorContainer.appendChild(newInput);
     };
 
@@ -221,29 +258,36 @@ function addSwitchEventListeners() {
     const confettiSwitch = document.getElementById('confettiSwitch');
     const colorSelectorIds = ["colorSelector1", "colorSelector2", "colorSelector3"];
 
-    // comment out the lines for the sliders that aren't needed
     snowSwitch.addEventListener('change', (event) => {
         const parentId = "snowOptions";
         if(event.target.checked) {
-            // add time
-            createSliders(parentId, "Ticks", "tickSlider", 0, 500, 10);
+            // createSliders(parentId, "Ticks", "tickSlider", 0, 500, 10);
+            createSliders(parentId, "Duration", "timeSlider", 1, 30, 1);
             
-            createColorInputs(parentId, "Snow Colors", colorSelectorIds);
-            getSavedSettings(defaultSnow, "snowSwitch");
+            createColorInputs(parentId, "Snow Colors", ["colorSelector1"]);
+            selectedProfile = "snow";
+            getSavedSettings(selectedProfile, function(profileSettings) {
+                updateInputs(profileSettings || defaultSnow, "snowSwitch", "checkOffSwitch");
+            });
+            // updateInputs(defaultSnow, "snowSwitch", "checkOffSwitch");
         } else { deleteSwitchSettings(parentId) };
     });
 
     fireworkSwitch.addEventListener('change', (event) => {
         const parentId = "fireworkOptions";
         if(event.target.checked) {
-            // add time
             createSliders(parentId, "Particle Count", "particleSlider", 10, 500, 10);
             createSliders(parentId, "Initial Velocity", "velocitySlider", 10, 100, 5);
             createSliders(parentId, "Spread", "spreadSlider", 10, 360, 10);
-            createSliders(parentId, "Ticks", "tickSlider", 0, 500, 10);
+            // createSliders(parentId, "Ticks", "tickSlider", 0, 500, 10);
+            createSliders(parentId, "Duration", "timeSlider", 1, 30, 1);
 
             createColorInputs(parentId, "Firework Colors", colorSelectorIds);
-            getSavedSettings(defaultFireworks, "fireworkSwitch");
+            selectedProfile = "fireworks";
+            getSavedSettings(selectedProfile, function(profileSettings) {
+                updateInputs(profileSettings || defaultFireworks, "fireworkSwitch", "checkOffSwitch");
+            });
+            // updateInputs(defaultFireworks, "fireworkSwitch", "checkOffSwitch");
         } else { deleteSwitchSettings(parentId) };
     });
 
@@ -260,9 +304,14 @@ function addSwitchEventListeners() {
             // createSliders(parentId, "Ticks", "tickSlider", 0, 500, 10);
             // createSliders(parentId, "Particle Size", "particleSizeSlider", .2, 5, .1);
             // createSliders(parentId, "Random Bursts", "burstSlider", 0, 20, 1);
+            // createSliders(parentId, "Duration", "timeSlider", 1, 30, 1);
 
             // createColorInputs(parentId, "Spark Colors", colorSelectorIds);
-            getSavedSettings(defaultWool, "woolSwitch");
+            selectedProfile = "steelWool";
+            getSavedSettings(selectedProfile, function(profileSettings) {
+                updateInputs(profileSettings || defaultWool, "woolSwitch", "checkOffSwitch");
+            });
+            // updateInputs(defaultWool, "woolSwitch", "checkOffSwitch");
         } else { deleteSwitchSettings(parentId) };
     });
 
@@ -277,13 +326,17 @@ function addSwitchEventListeners() {
             createSliders(parentId, "Decay", "decaySlider", .2, 2, .1);
             createSliders(parentId, "Gravity", "gravitySlider", .1, 3, .1);
             createSliders(parentId, "Wind", "driftSlider", 0, 20, 1);
-            createSliders(parentId, "Ticks", "tickSlider", 0, 500, 10);
+            // createSliders(parentId, "Ticks", "tickSlider", 0, 500, 10);
             createSliders(parentId, "Particle Size", "particleSizeSlider", .2, 5, .1);
             createSliders(parentId, "Random Bursts", "burstSlider", 0, 20, 1);
 
             // createColorInputs(parentId, labelText, colorSelectorIds)
             createColorInputs(parentId, "Confetti Colors", colorSelectorIds);
-            getSavedSettings(defaultVals, "confettiSwitch");
+            selectedProfile = "confetti";
+            getSavedSettings(selectedProfile, function(profileSettings) {
+                updateInputs(profileSettings || defaultVals, "confettiSwitch", "checkOffSwitch");
+            });
+            // updateInputs(defaultVals, "confettiSwitch", "checkOffSwitch");
         } else { deleteSwitchSettings(parentId) };
     });
 }
