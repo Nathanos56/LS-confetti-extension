@@ -102,11 +102,11 @@ window.onload = function() {
     }); 
 
     resetButton.addEventListener('click', (event) => {
-        console.log("reset button pressed");
+        // console.log("reset button pressed");
         const switches = document.querySelectorAll('[role="switch"]:not(#checkOffSwitch)');
         switches.forEach(function(mySwitch) {
             if (mySwitch.checked) {
-                console.log("the switch being reset: ", mySwitch.id);
+                // console.log("the switch being reset: ", mySwitch.id);
                 switch(mySwitch.id) {
                     case "confettiSwitch":
                         updateInputs(defaultVals, "confettiSwitch", "checkOffSwitch");
@@ -131,7 +131,7 @@ function getSavedSettings(profileName, callback) {
     chrome.storage.sync.get('profiles', function(data) {
         profiles = data.profiles;
         if (profiles) {
-            console.log('profiles:', profiles);
+            // console.log('profiles:', profiles);
             callback(profiles[profileName]);
         } else {
             callback(null);
@@ -145,7 +145,7 @@ function updateInputs(settings, targetSwitch, checkOffSwitch) {
     // show switch states
     const switches = document.querySelectorAll(`[role="switch"]:not(#${checkOffSwitch}):not(#${targetSwitch})`);
     switches.forEach(function(mySwitch) {
-        console.log("switch.id:", mySwitch.id);
+        // console.log("switch.id:", mySwitch.id);
         mySwitch.checked = settings[mySwitch.id] || false;
         mySwitch.dispatchEvent(new Event('change'));
     });
@@ -164,7 +164,7 @@ function updateInputs(settings, targetSwitch, checkOffSwitch) {
     // show color input states
     var colorInputs = document.querySelectorAll('.form-control-color');
     colorInputs.forEach(function(colorInput) {
-        console.log('%csettings[colorInput.id]' + settings[colorInput.id], 'color: green; font-weight: bold;');
+        // console.log('%csettings[colorInput.id]' + settings[colorInput.id], 'color: green; font-weight: bold;');
         colorInput.value = (settings && settings[colorInput.id]) || defaultVals[colorInput.id] || '#808080';
     });
 };

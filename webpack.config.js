@@ -37,12 +37,13 @@ module.exports = {
     }),
     new CopyWebpackPlugin({
       patterns: [
-        { from: 'images', to: 'images' }
+        { from: 'images', to: 'images' },
+        { from: "./content_scripts/manifest.json", to: "manifest.json"}
       ],
     }),
   ],
   // comment this out for deployment
-  // mode: 'production',
-  mode: 'development',
+  mode: 'production',
+  // mode: 'development',
   devtool: 'source-map',
 };
