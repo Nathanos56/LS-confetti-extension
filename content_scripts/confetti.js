@@ -2,7 +2,6 @@
 // toDo:
 // add css animations in the popup
 // create steelwool effect
-// fix reset button
 // get rid of profiles{}. flatten the tree
 
 
@@ -71,8 +70,65 @@ function randomConfetti(burstNum, color1, color2, color3) {
     });
 }
 
-function steelWool(profileSettings) {
+// equation of a circle in cartesian: (x - h)^2 + (y - k)^2 = r^2
+// polar to cartesian: x = r * cos(theta) , y = r * sin(theta)
+// 
+// angle between two vectors: theta = arccos( (U @ V) / (||U|| * ||v||) )
+// ||U|| = r , ||V|| = r, so theta = arccos( (U @ V) / r^2 )
+// 
+// degrees = radians * 180 / pi
 
+// profileSettings['timeSlider'] ||
+// profileSettings['particleSlider'] ||
+// profileSettings['radiusSlider'] ||
+//  profileSettings['velocitySlider'] ||
+        // profileSettings['spreadSlider'] ||
+        // profileSettings['tickSlider'] ||
+        // profileSettings['colorSelector1'] ||
+
+function steelWool(profileSettings) {
+    console.log("inside steelwool function")
+    const inputTime =  10;
+    const MyparticleCount =  3;
+    const r =  20;
+    const size = 1;
+
+    let duration = inputTime * 1000;
+    let animationEnd = Date.now() + duration;
+
+    var interval = setInterval(function() {
+        let currTime =  Date.now();
+        let timeLeft = animationEnd - currTime;
+        // 2pi = 6.28318530718
+        let theta = currTime % 6.28;
+
+        let sparkY =  r * Math.sin(theta); //+ ( window.innerHeight / 2 );
+        let sparkX =  r * Math.cos(theta); //+ ( window.innerWidth / 2 );
+        // if (x < .01) {x = .01};
+        // let m = y / x;
+        let sparkAngle = Math.atan2(sparkY, sparkX) * (180 / Math.PI) + 90;
+        // let sparkAngle = Math.atan( Math.abs(m) )
+
+        let posX = (( sparkX + ( window.innerHeight / 2 ) ) / window.innerWidth);
+        let posY = (( sparkY + ( window.innerHeight / 2 ) ) / window.innerHeight);
+
+        let settings = { velocity: 30,
+            scalar: 2,
+            spread:  10,
+            angle: sparkAngle,
+            ticks:  10,
+            zIndex: 0,
+            colors: [ '#FFFF00'],
+            particleCount: MyparticleCount, //* (timeLeft / duration), //this fades out the effect
+            origin: { x: posX, y: posY }
+        };
+
+        if (timeLeft <= 0) {
+            return clearInterval(interval);
+        };
+
+        confetti(settings);
+    }, 10); //50ms between launches
 }
 
 function fireworks(profileSettings) {
