@@ -72,64 +72,72 @@ function randomConfetti(burstNum, color1, color2, color3) {
 
 // equation of a circle in cartesian: (x - h)^2 + (y - k)^2 = r^2
 // polar to cartesian: x = r * cos(theta) , y = r * sin(theta)
-// 
-// angle between two vectors: theta = arccos( (U @ V) / (||U|| * ||v||) )
-// ||U|| = r , ||V|| = r, so theta = arccos( (U @ V) / r^2 )
-// 
-// degrees = radians * 180 / pi
 
-// profileSettings['timeSlider'] ||
-// profileSettings['particleSlider'] ||
-// profileSettings['radiusSlider'] ||
-//  profileSettings['velocitySlider'] ||
-        // profileSettings['spreadSlider'] ||
-        // profileSettings['tickSlider'] ||
-        // profileSettings['colorSelector1'] ||
+// constants
+const degreeToRadian = Math.PI / 180;
+const twoPI = Math.PI * 2;
+const radianToDegree = 1 / degreeToRadian;
+const width = window.innerWidth;
+const height = window.innerHeight;
 
 function steelWool(profileSettings) {
-    console.log("inside steelwool function")
-    const inputTime =  10;
-    const MyparticleCount =  3;
-    const r =  20;
-    const size = 1;
+    const revolutions =  8;
+    const MyparticleCount =  5;
+    const r =  100; // px
+    const size = .85;
 
-    let duration = inputTime * 1000;
-    let animationEnd = Date.now() + duration;
+    const accuracy = 360;
+    const dTheta = ( 360 / accuracy ) * degreeToRadian;
 
-    var interval = setInterval(function() {
-        let currTime =  Date.now();
-        let timeLeft = animationEnd - currTime;
-        // 2pi = 6.28318530718
-        let theta = currTime % 6.28;
+    const duration = revolutions * accuracy;
+    let count = 0;
+    // let countLeft = duration;
 
-        let sparkY =  r * Math.sin(theta); //+ ( window.innerHeight / 2 );
-        let sparkX =  r * Math.cos(theta); //+ ( window.innerWidth / 2 );
-        // if (x < .01) {x = .01};
-        // let m = y / x;
-        let sparkAngle = Math.atan2(sparkY, sparkX) * (180 / Math.PI) + 90;
-        // let sparkAngle = Math.atan( Math.abs(m) )
+    let settings = { velocity: 75,
+        gravity: 1,
+        decay: .96,
+        scalar: size,
+        spread:  10,
+        angle: 0,
+        ticks:  110,
+        zIndex: 0,
+        colors: [ '#FFFF00'],
+        particleCount: MyparticleCount, 
+        origin: { x: 0, y: 0 }
+    };
 
-        let posX = (( sparkX + ( window.innerHeight / 2 ) ) / window.innerWidth);
-        let posY = (( sparkY + ( window.innerHeight / 2 ) ) / window.innerHeight);
+    // do all the calculations before the animation starts
+    let angleValues = new Array(duration);
+    let originXValues = new Array(duration);
+    let originYValues = new Array(duration);
+    for (let i = 0; i < duration; i++) {
+        const theta = (i * dTheta) % twoPI;
+        angleValues[i] = (-theta * radianToDegree) - 90;
+        originXValues[i] = ((r * Math.cos(theta)) / width ) + .5;
+        originYValues[i] = ((r * Math.sin(theta)) / height) + .5;
+    }
+    
+    function frame() {
+        ++count;
+        if (count > duration) { return };
+        // --countLeft;
 
-        let settings = { velocity: 30,
-            scalar: 2,
-            spread:  10,
-            angle: sparkAngle,
-            ticks:  10,
-            zIndex: 0,
-            colors: [ '#FFFF00'],
-            particleCount: MyparticleCount, //* (timeLeft / duration), //this fades out the effect
-            origin: { x: posX, y: posY }
-        };
-
-        if (timeLeft <= 0) {
-            return clearInterval(interval);
-        };
-
+        settings.angle = angleValues[count];
+        settings.origin.x = originXValues[count];
+        settings.origin.y = originYValues[count];
+        // settings.particleCount = MyparticleCount * (countLeft / duration);   //this fades out the effect
+        
         confetti(settings);
-    }, 10); //50ms between launches
+        // requestAnimationFrame(frame);
+        frame();
+        // setTimeout(frame, 50); //ms
+    }
+    frame();
+    // debounce(() => {
+    //     requestAnimationFrame(frame);
+    // }, 50);
 }
+
 
 function fireworks(profileSettings) {
     const inputTime = profileSettings['timeSlider'] || 5;
@@ -224,7 +232,6 @@ function getSettings(selectedProfile) {
 }
 
 window.onload = async function() {
-
     // console.log('%cinside dom event listener', 'color: green; font-weight: bold;');
     const LSSubmit = '[data-v-625658].text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
     const LSCheckOff = '[data-v--363100].float-right.ml-2.w-28.text-white.bg-primary-dark.hover\\:bg-primary-alt.p-px.font-metro.focus\\:outline-none.transition-colors.duration-150';
