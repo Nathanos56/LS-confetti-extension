@@ -77,24 +77,28 @@ function randomConfetti(burstNum, color1, color2, color3) {
 const degreeToRadian = Math.PI / 180;
 const twoPI = Math.PI * 2;
 const radianToDegree = 1 / degreeToRadian;
-const width = window.innerWidth;
-const height = window.innerHeight;
 
 async function steelWool(profileSettings) {
-    const revolutions =  15;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const revolutions =  30;
     const MyparticleCount =  1;
     const r =  100; // px
     const size = .75;
-    let step = 100; 
+    const originalStep = 10; //100
+    const myVelocity = 75;
+    const myDecay = .97;
 
     const accuracy = 360;
     const dTheta = ( 360 / accuracy ) * degreeToRadian;
 
     const duration = revolutions * accuracy;
     let count = 0;
-    // let countLeft = duration;
+    let step = 0;
+    let increment = 1;
 
-    let settings = { velocity: 75,
+    let settings = { velocity: myVelocity,
         gravity: 1,
         decay: .97,
         scalar: size,
@@ -109,47 +113,49 @@ async function steelWool(profileSettings) {
         origin: { x: 0, y: 0 }
     };
 
+    const xShift = 3;
+    const yShift = 20;
+    const stretch = 1 / revolutions;
+    function easeInQuad(t) { return t * t };
+    function easeInCube(t) { return t * t * t };
+    function tanslatedEaseInCubic(t) {
+        return stretch * Math.pow( t - xShift, 3 ) + yShift;
+    }
+
     // do all the calculations before the animation starts
     let angleValues = new Array(duration);
     let originXValues = new Array(duration);
     let originYValues = new Array(duration);
-    for (let i = 0; i < duration; i++) {
-        const theta = (i * dTheta) % twoPI;
-        angleValues[i] = (-theta * radianToDegree) - 90;
-        originXValues[i] = ((r * Math.cos(theta)) / width ) + .5;
-        originYValues[i] = ((r * Math.sin(theta)) / height) + .5;
+    let stepValues = new Array(duration);
+    let decayValues = new Array(duration);
+    for ( let i = 0; i < duration; i++ ) {
+        const theta = ( i * dTheta ) % twoPI;
+        angleValues[i] = ( -theta * radianToDegree ) - 90;
+        originXValues[i] = ( ( r * Math.cos(theta) ) / width ) + .5;
+        originYValues[i] = ( ( r * Math.sin(theta) ) / height) + .5;
+        let fadeOut = ( ( duration - i ) / duration );
+        stepValues[i] = originalStep *  easeInCube(1 / fadeOut);                       // this accelerates the animation speed
+        // stepValues[i] = originalStep * tanslatedEaseInCubic(1 / fadeOut);
+        decayValues[i] = Math.min( myDecay * easeInQuad(1 / fadeOut) / 1.2, myDecay);  // this too
     }
-    
-    // function wait(ms) {
-    //     return new Promise(resolve => setTimeout(resolve, ms));
-    // }
-
-    // for (let count = 0; count < duration; ++count) {
-    //     settings.angle = angleValues[count];
-    //     settings.origin.x = originXValues[count];
-    //     settings.origin.y = originYValues[count];
-    //     // settings.particleCount = MyparticleCount * (countLeft / duration);   //this fades out the effect
-    //     confetti(settings);
-    //     await wait(1);
-    // }
 
     function frame() {
-        for(let i = 0; i < step; ++i) {
+        // stepValues[count]
+        for(let i = 0; i < stepValues[count]; ++i) {
             if (count >= duration) { return; }
             settings.angle = angleValues[count];
             settings.origin.x = originXValues[count];
             settings.origin.y = originYValues[count];
-            // settings.particleCount = MyparticleCount * (countLeft / duration);   //this fades out the effect
+            settings.decay = decayValues[count];
             confetti(settings);
             ++count;
         }
+        // step += increment;
+        // increment *= .999;
         requestAnimationFrame(frame);
     }
 
     frame();
-    // debounce(() => {
-    //     requestAnimationFrame(frame);
-    // }, 50);
 }
 
 
