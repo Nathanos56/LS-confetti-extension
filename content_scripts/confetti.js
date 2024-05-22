@@ -81,46 +81,34 @@ const radianToDegree = 1 / degreeToRadian;
 async function steelWool(profileSettings) {
     const width = window.innerWidth;
     const height = window.innerHeight;
-
-    const revolutions =  30;
-    const MyparticleCount =  1;
-    const r =  100; // px
-    const size = .75;
     const originalStep = 10; //100
-    const myVelocity = 75;
     const myDecay = .97;
 
-    const accuracy = 360;
+    const revolutions = profileSettings['revolutionsSlider'] || 15;
+    const r = profileSettings['radiusSlider'] || 100; // px
+    const accuracy = profileSettings['accuracySlider'] || 360;
+    
     const dTheta = ( 360 / accuracy ) * degreeToRadian;
-
     const duration = revolutions * accuracy;
-    let count = 0;
-    let step = 0;
-    let increment = 1;
 
-    let settings = { velocity: myVelocity,
-        gravity: 1,
+    let settings = { velocity: profileSettings['velocitySlider'] || 75,
+        gravity: profileSettings['gravitySlider'] || 1,
         decay: .97,
-        scalar: size,
-        spread:  10,
+        scalar: profileSettings['particleSizeSlider'] || .75,
+        spread:  profileSettings['spreadSlider'] || 10,
         angle: 0,
-        ticks:  90,
+        ticks:  profileSettings['tickSlider'] || 90,
         zIndex: 0,
+        drift: profileSettings['driftSlider'] || 0,
         // flat: true,
         // shapes: ['circle'],
-        colors: [ '#FFFF00'],
-        particleCount: MyparticleCount, 
+        colors: [ profileSettings['colorSelector1'] || '#FFFF00', profileSettings['colorSelector2'] || '#FFFF00', profileSettings['colorSelector3'] || '#FFFF00'],
+        particleCount: profileSettings['particleSlider'] || 1, 
         origin: { x: 0, y: 0 }
     };
 
-    const xShift = 3;
-    const yShift = 20;
-    const stretch = 1 / revolutions;
     function easeInQuad(t) { return t * t };
     function easeInCube(t) { return t * t * t };
-    function tanslatedEaseInCubic(t) {
-        return stretch * Math.pow( t - xShift, 3 ) + yShift;
-    }
 
     // do all the calculations before the animation starts
     let angleValues = new Array(duration);
@@ -135,12 +123,12 @@ async function steelWool(profileSettings) {
         originYValues[i] = ( ( r * Math.sin(theta) ) / height) + .5;
         let fadeOut = ( ( duration - i ) / duration );
         stepValues[i] = originalStep *  easeInCube(1 / fadeOut);                       // this accelerates the animation speed
-        // stepValues[i] = originalStep * tanslatedEaseInCubic(1 / fadeOut);
         decayValues[i] = Math.min( myDecay * easeInQuad(1 / fadeOut) / 1.2, myDecay);  // this too
     }
 
+    let count = 0;
+
     function frame() {
-        // stepValues[count]
         for(let i = 0; i < stepValues[count]; ++i) {
             if (count >= duration) { return; }
             settings.angle = angleValues[count];
@@ -150,8 +138,6 @@ async function steelWool(profileSettings) {
             confetti(settings);
             ++count;
         }
-        // step += increment;
-        // increment *= .999;
         requestAnimationFrame(frame);
     }
 

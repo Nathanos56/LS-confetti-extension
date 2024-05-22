@@ -35,7 +35,21 @@ const defaultFireworks = {
     "colorSelector2": '#0000ff',
     "colorSelector3": '#00ff00'
 }
-const defaultWool = { }
+const defaultWool = {
+    'revolutionsSlider': 15,
+    'radiusSlider': 100,
+    'accuracySlider': 360,
+    'velocitySlider': 75,
+    'gravitySlider': 1,
+    'particleSizeSlider': .75,
+    'particleSlider': 1,
+    'spreadSlider': 10,
+    'tickSlider': 90,
+    'driftSlider': 0,
+    'colorSelector1': '#FFFF00',
+    'colorSelector2': '#FFFF00',
+    'colorSelector3': '#FFFF00'
+}
 
 const applyButton = document.getElementById('applyButton');
 const resetButton = document.getElementById('resetButton');
@@ -269,7 +283,6 @@ function addSwitchEventListeners() {
             getSavedSettings(selectedProfile, function(profileSettings) {
                 updateInputs(profileSettings || defaultSnow, "snowSwitch", "checkOffSwitch");
             });
-            // updateInputs(defaultSnow, "snowSwitch", "checkOffSwitch");
         } else { deleteSwitchSettings(parentId) };
     });
 
@@ -287,31 +300,28 @@ function addSwitchEventListeners() {
             getSavedSettings(selectedProfile, function(profileSettings) {
                 updateInputs(profileSettings || defaultFireworks, "fireworkSwitch", "checkOffSwitch");
             });
-            // updateInputs(defaultFireworks, "fireworkSwitch", "checkOffSwitch");
         } else { deleteSwitchSettings(parentId) };
     });
 
     woolSwitch.addEventListener('change', (event) => {
         const parentId = "woolOptions";
         if(event.target.checked) {
-            // createSliders(parentId, "Particle Count", "particleSlider", 10, 500, 10);
-            // createSliders(parentId, "Angle", "angleSlider", 0, 180, 5);
-            // createSliders(parentId, "Spread", "spreadSlider", 10, 360, 10);
-            // createSliders(parentId, "Initial Velocity", "velocitySlider", 10, 100, 5);
-            // createSliders(parentId, "Decay", "decaySlider", .2, 2, .1);
-            // createSliders(parentId, "Gravity", "gravitySlider", .1, 3, .1);
-            // createSliders(parentId, "Wind", "driftSlider", 0, 20, 1);
-            // createSliders(parentId, "Ticks", "tickSlider", 0, 500, 10);
-            // createSliders(parentId, "Particle Size", "particleSizeSlider", .2, 5, .1);
-            // createSliders(parentId, "Random Bursts", "burstSlider", 0, 20, 1);
-            // createSliders(parentId, "Duration", "timeSlider", 1, 30, 1);
+            createSliders(parentId, "Particle Count", "particleSlider", 1, 10, 1);
+            createSliders(parentId, "Spread", "spreadSlider", 0, 50, 5);
+            createSliders(parentId, "Initial Velocity", "velocitySlider", 15, 150, 5);
+            createSliders(parentId, "Gravity", "gravitySlider", -2, 2, .1);
+            createSliders(parentId, "Wind", "driftSlider", -5, 5, .5);
+            createSliders(parentId, "Ticks", "tickSlider", 20, 200, 10);
+            createSliders(parentId, "Particle Size", "particleSizeSlider", .3, 2, .05);
+            createSliders(parentId, "Revolutions", "revolutionsSlider", 5, 50, 2);
+            createSliders(parentId, "Radius", "radiusSlider", 50, 500, 10);
+            createSliders(parentId, "Accuracy", "accuracySlider", 50, 500, 10);
 
-            // createColorInputs(parentId, "Spark Colors", colorSelectorIds);
+            createColorInputs(parentId, "Spark Colors", colorSelectorIds);
             selectedProfile = "steelWool";
             getSavedSettings(selectedProfile, function(profileSettings) {
                 updateInputs(profileSettings || defaultWool, "woolSwitch", "checkOffSwitch");
             });
-            // updateInputs(defaultWool, "woolSwitch", "checkOffSwitch");
         } else { deleteSwitchSettings(parentId) };
     });
 
@@ -324,19 +334,17 @@ function addSwitchEventListeners() {
             createSliders(parentId, "Spread", "spreadSlider", 10, 360, 10);
             createSliders(parentId, "Initial Velocity", "velocitySlider", 10, 100, 5);
             createSliders(parentId, "Decay", "decaySlider", .2, 2, .1);
-            createSliders(parentId, "Gravity", "gravitySlider", .1, 3, .1);
-            createSliders(parentId, "Wind", "driftSlider", 0, 20, 1);
+            createSliders(parentId, "Gravity", "gravitySlider", -2, 2, .1);
+            createSliders(parentId, "Wind", "driftSlider", -5, 5, .5);
             // createSliders(parentId, "Ticks", "tickSlider", 0, 500, 10);
             createSliders(parentId, "Particle Size", "particleSizeSlider", .2, 5, .1);
             createSliders(parentId, "Random Bursts", "burstSlider", 0, 20, 1);
 
-            // createColorInputs(parentId, labelText, colorSelectorIds)
             createColorInputs(parentId, "Confetti Colors", colorSelectorIds);
             selectedProfile = "confetti";
             getSavedSettings(selectedProfile, function(profileSettings) {
                 updateInputs(profileSettings || defaultVals, "confettiSwitch", "checkOffSwitch");
             });
-            // updateInputs(defaultVals, "confettiSwitch", "checkOffSwitch");
         } else { deleteSwitchSettings(parentId) };
     });
 }
