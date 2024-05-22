@@ -80,11 +80,12 @@ const radianToDegree = 1 / degreeToRadian;
 const width = window.innerWidth;
 const height = window.innerHeight;
 
-function steelWool(profileSettings) {
-    const revolutions =  8;
-    const MyparticleCount =  5;
+async function steelWool(profileSettings) {
+    const revolutions =  15;
+    const MyparticleCount =  1;
     const r =  100; // px
-    const size = .85;
+    const size = .75;
+    let step = 100; 
 
     const accuracy = 360;
     const dTheta = ( 360 / accuracy ) * degreeToRadian;
@@ -95,12 +96,14 @@ function steelWool(profileSettings) {
 
     let settings = { velocity: 75,
         gravity: 1,
-        decay: .96,
+        decay: .97,
         scalar: size,
         spread:  10,
         angle: 0,
-        ticks:  110,
+        ticks:  90,
         zIndex: 0,
+        // flat: true,
+        // shapes: ['circle'],
         colors: [ '#FFFF00'],
         particleCount: MyparticleCount, 
         origin: { x: 0, y: 0 }
@@ -117,21 +120,32 @@ function steelWool(profileSettings) {
         originYValues[i] = ((r * Math.sin(theta)) / height) + .5;
     }
     
-    function frame() {
-        ++count;
-        if (count > duration) { return };
-        // --countLeft;
+    // function wait(ms) {
+    //     return new Promise(resolve => setTimeout(resolve, ms));
+    // }
 
-        settings.angle = angleValues[count];
-        settings.origin.x = originXValues[count];
-        settings.origin.y = originYValues[count];
-        // settings.particleCount = MyparticleCount * (countLeft / duration);   //this fades out the effect
-        
-        confetti(settings);
-        // requestAnimationFrame(frame);
-        frame();
-        // setTimeout(frame, 50); //ms
+    // for (let count = 0; count < duration; ++count) {
+    //     settings.angle = angleValues[count];
+    //     settings.origin.x = originXValues[count];
+    //     settings.origin.y = originYValues[count];
+    //     // settings.particleCount = MyparticleCount * (countLeft / duration);   //this fades out the effect
+    //     confetti(settings);
+    //     await wait(1);
+    // }
+
+    function frame() {
+        for(let i = 0; i < step; ++i) {
+            if (count >= duration) { return; }
+            settings.angle = angleValues[count];
+            settings.origin.x = originXValues[count];
+            settings.origin.y = originYValues[count];
+            // settings.particleCount = MyparticleCount * (countLeft / duration);   //this fades out the effect
+            confetti(settings);
+            ++count;
+        }
+        requestAnimationFrame(frame);
     }
+
     frame();
     // debounce(() => {
     //     requestAnimationFrame(frame);
