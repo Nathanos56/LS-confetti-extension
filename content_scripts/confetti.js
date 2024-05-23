@@ -185,7 +185,7 @@ function snow(profileSettings) {
         const timeLeft = animationEnd - Date.now();
         skew = Math.max(0.8, skew - 0.001);
 
-        settings.ticks = Math.max(profileSettings['tickSlider'] || 200, 500 * (timeLeft / duration));
+        settings.ticks = Math.max( 200, 500 * (timeLeft / duration) );
         settings.colors.push(settings.colors.shift());
         settings.gravity = randomInRange(0.4, 0.6);
         settings.scalar = randomInRange(0.4, 1);

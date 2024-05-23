@@ -20,9 +20,8 @@ const defaultVals = {
 }
 const defaultSnow = {
     "timeSlider": 5,
-    "skewSlider": 1,
-    "tickSlider": 200,
-    "particleSlider": 150,
+    "velocitySlider": 0,
+    "particleSlider": 1,
     "colorSelector1": '#ffffff',
     "colorSelector2": '#ffffff',
     "colorSelector3": '#ffffff'
@@ -240,12 +239,7 @@ function createColorInputs(parentId, labelText, colorSelectorIds) {
     newForm.appendChild(newLabel);
 
     var colorContainer = document.createElement("div");
-    // if (colorSelectorIds.length > 1) {
-        colorContainer.className = "d-flex justify-content-between ms-4 me-4";
-    // } else {
-    //     colorContainer.className = "d-flex justify-content-center";
-    // }
-    
+    colorContainer.className = "d-flex justify-content-between ms-4 me-4";
 
     for (var i = 0; i < colorSelectorIds.length; ++i) {
         var newInput = document.createElement("input");
@@ -277,7 +271,8 @@ function addSwitchEventListeners() {
     snowSwitch.addEventListener('change', (event) => {
         const parentId = "snowOptions";
         if(event.target.checked) {
-            // createSliders(parentId, "Ticks", "tickSlider", 0, 500, 10);
+            createSliders(parentId, "Particle Count", "particleSlider", 1, 10, 1);
+            createSliders(parentId, "Initial Velocity", "velocitySlider", -10, 10, 1);
             createSliders(parentId, "Duration", "timeSlider", 1, 30, 1);
             
             createColorInputs(parentId, "Snow Colors", colorSelectorIds);
