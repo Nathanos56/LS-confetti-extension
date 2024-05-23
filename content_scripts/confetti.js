@@ -1,45 +1,34 @@
 
 // toDo:
 // add css animations in the popup
-// create steelwool effect
 // get rid of profiles{}. flatten the tree
+// make steel wool follow the mouse
 
 
 import confetti from 'canvas-confetti';
 
-function initialConfetti(profileSettings) {
-    const MyparticleCount = profileSettings['particleSlider'] || 150;
-    const angle = profileSettings['angleSlider'] || 90;
-    const spread = profileSettings['spreadSlider'] || 270;
-    const velocity = profileSettings['velocitySlider'] || 45;
-    const decay = profileSettings['decaySlider'] || 0.9;
-    const gravity = profileSettings['gravitySlider'] || 1;
-    const drift = profileSettings['driftSlider'] || 0;
-    const ticks = profileSettings['tickSlider'] || 200;
-    const size = profileSettings['particleSizeSlider'] || 1;
-    const burstNum = profileSettings['burstSlider'] || 5;
+function initialConfetti(profileSettings) {   
     const color1 = profileSettings['colorSelector1'] || '#f00';
     const color2 = profileSettings['colorSelector2'] || '#00f';
     const color3 = profileSettings['colorSelector3'] || '#0f0';
-    
     // Default values are commented
-    const testConfettiSettings = {
-        particleCount: MyparticleCount,  // 50
-        angle: angle,              // 90
-        spread: spread,            // 45
-        startVelocity: velocity,   // 45
-        decay: decay,              // .9
-        gravity: gravity,          // 1
-        drift: drift,              // 0
-        flat: false,               // false
-        ticks: ticks,              // 200   how many times the confetti will move
+    const settings = {
+        particleCount: profileSettings['particleSlider'] || 150,  // 50
+        angle: profileSettings['angleSlider'] || 90,              // 90
+        spread: profileSettings['spreadSlider'] || 270,           // 45
+        startVelocity: profileSettings['velocitySlider'] || 45,   // 45
+        decay: profileSettings['decaySlider'] || 0.9,             // .9
+        gravity: profileSettings['gravitySlider'] || 1,           // 1
+        drift: profileSettings['driftSlider'] || 0,               // 0
+        flat: false,                                              // false
+        ticks: profileSettings['tickSlider'] || 200,              // 200   how many times the confetti will move
         //origin: object,
-        scalar: size,              // 1      size of particles
-        colors: [color1, color2, color3], // Adjust the confetti colors
+        scalar: profileSettings['particleSizeSlider'] || 1,       // 1      size of particles
+        colors: [ color1, color2, color3 ], // Adjust the confetti colors
     };
-    confetti(testConfettiSettings);
+    confetti(settings);
 
-    randomConfetti(burstNum, color1, color2, color3);
+    randomConfetti(profileSettings['burstSlider'] || 5, color1, color2, color3);
 }
 
 function randomConfetti(burstNum, color1, color2, color3) {
@@ -70,17 +59,10 @@ function randomConfetti(burstNum, color1, color2, color3) {
     });
 }
 
-// equation of a circle in cartesian: (x - h)^2 + (y - k)^2 = r^2
-// polar to cartesian: x = r * cos(theta) , y = r * sin(theta)
-
-// constants
-const degreeToRadian = Math.PI / 180;
-const twoPI = Math.PI * 2;
-const radianToDegree = 1 / degreeToRadian;
-
 async function steelWool(profileSettings) {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const degreeToRadian = Math.PI / 180;
+    const twoPI = Math.PI * 2;
+    const radianToDegree = 1 / degreeToRadian;
     const originalStep = 10; //100
     const myDecay = .97;
 
@@ -91,7 +73,8 @@ async function steelWool(profileSettings) {
     const dTheta = ( 360 / accuracy ) * degreeToRadian;
     const duration = revolutions * accuracy;
 
-    let settings = { velocity: profileSettings['velocitySlider'] || 75,
+    let settings = { 
+        velocity: profileSettings['velocitySlider'] || 75,
         gravity: profileSettings['gravitySlider'] || 1,
         decay: .97,
         scalar: profileSettings['particleSizeSlider'] || .75,
@@ -100,9 +83,7 @@ async function steelWool(profileSettings) {
         ticks:  profileSettings['tickSlider'] || 90,
         zIndex: 0,
         drift: profileSettings['driftSlider'] || 0,
-        // flat: true,
-        // shapes: ['circle'],
-        colors: [ profileSettings['colorSelector1'] || '#FFFF00', profileSettings['colorSelector2'] || '#FFFF00', profileSettings['colorSelector3'] || '#FFFF00'],
+        colors: [profileSettings['colorSelector1'] || '#ff0', profileSettings['colorSelector2'] || '#ff0', profileSettings['colorSelector3'] || '#ff0'],
         particleCount: profileSettings['particleSlider'] || 1, 
         origin: { x: 0, y: 0 }
     };
@@ -119,8 +100,12 @@ async function steelWool(profileSettings) {
     for ( let i = 0; i < duration; i++ ) {
         const theta = ( i * dTheta ) % twoPI;
         angleValues[i] = ( -theta * radianToDegree ) - 90;
-        originXValues[i] = ( ( r * Math.cos(theta) ) / width ) + .5;
-        originYValues[i] = ( ( r * Math.sin(theta) ) / height) + .5;
+        // polar to cartesian: x = r * cos(theta) , y = r * sin(theta)
+        // a circle in polar coordinates can be drawn by changing theta
+        // divide by width and height to turn it into a percent between 0 and 1
+        // add .5 to center on screen
+        originXValues[i] = ( ( r * Math.cos(theta) ) / window.innerWidth ) + .5;
+        originYValues[i] = ( ( r * Math.sin(theta) ) / window.innerHeight) + .5;
         let fadeOut = ( ( duration - i ) / duration );
         stepValues[i] = originalStep *  easeInCube(1 / fadeOut);                       // this accelerates the animation speed
         decayValues[i] = Math.min( myDecay * easeInQuad(1 / fadeOut) / 1.2, myDecay);  // this too
@@ -135,6 +120,7 @@ async function steelWool(profileSettings) {
             settings.origin.x = originXValues[count];
             settings.origin.y = originYValues[count];
             settings.decay = decayValues[count];
+            settings.colors.push(settings.colors.shift());
             confetti(settings);
             ++count;
         }
@@ -179,39 +165,43 @@ function fireworks(profileSettings) {
 
 function snow(profileSettings) {
     const inputTime = profileSettings['timeSlider'] || 5;
+    let duration = inputTime * 1000;
+    let animationEnd = Date.now() + duration;
+    let skew = 1;
 
-    var duration = inputTime * 1000;
-    var animationEnd = Date.now() + duration;
-    var skew = profileSettings['skewSlider'] || 1;
+    let settings = {
+        particleCount: profileSettings['particleSlider'] || 1,
+        startVelocity: profileSettings['velocitySlider'] || 0,
+        ticks: 200,
+        colors: [profileSettings['colorSelector1'] || '#ffffff', profileSettings['colorSelector2'] ||  '#ffffff', profileSettings['colorSelector3'] ||  '#ffffff'],
+        shapes: ['circle'],
+    }
 
     function randomInRange(min, max) {
         return Math.random() * (max - min) + min;
     }
 
-    (function frame() {
-        var timeLeft = animationEnd - Date.now();
-        var ticks = Math.max(profileSettings['tickSlider'] || 200, 500 * (timeLeft / duration));
+    function frame() {
+        const timeLeft = animationEnd - Date.now();
         skew = Math.max(0.8, skew - 0.001);
 
-        confetti({
-            particleCount: 1,
-            startVelocity: 0,
-            ticks: ticks,
-            origin: {
-                x: Math.random(),
-                y: (Math.random() * skew) - 0.2 // since particles fall down, skew start toward the top
-            },
-            colors: [profileSettings['colorSelector1'] || '#ffffff', profileSettings['colorSelector2'] ||  '#ffffff', profileSettings['colorSelector3'] ||  '#ffffff'],
-            shapes: ['circle'],
-            gravity: randomInRange(0.4, 0.6),
-            scalar: randomInRange(0.4, 1),
-            drift: randomInRange(-0.4, 0.4)
-        });
+        settings.ticks = Math.max(profileSettings['tickSlider'] || 200, 500 * (timeLeft / duration));
+        settings.colors.push(settings.colors.shift());
+        settings.gravity = randomInRange(0.4, 0.6);
+        settings.scalar = randomInRange(0.4, 1);
+        settings.drift = randomInRange(-0.4, 0.4);
+        settings.origin = {
+            x: Math.random(),
+            y: (Math.random() * skew) - 0.2 // since particles fall down, skew start toward the top
+        };
+
+        confetti(settings);
 
         if (timeLeft > 0) {
             requestAnimationFrame(frame);
         }
-    }());
+    };
+    frame();
 }
 
 

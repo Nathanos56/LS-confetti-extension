@@ -23,7 +23,9 @@ const defaultSnow = {
     "skewSlider": 1,
     "tickSlider": 200,
     "particleSlider": 150,
-    "colorSelector1": '#ffffff'
+    "colorSelector1": '#ffffff',
+    "colorSelector2": '#ffffff',
+    "colorSelector3": '#ffffff'
 }
 const defaultFireworks = {
     "timeSlider": 5,
@@ -46,9 +48,9 @@ const defaultWool = {
     'spreadSlider': 10,
     'tickSlider': 90,
     'driftSlider': 0,
-    'colorSelector1': '#FFFF00',
-    'colorSelector2': '#FFFF00',
-    'colorSelector3': '#FFFF00'
+    'colorSelector1': '#ff0000',
+    'colorSelector2': '#00ff00',
+    'colorSelector3': '#0000ff'
 }
 
 const applyButton = document.getElementById('applyButton');
@@ -238,11 +240,11 @@ function createColorInputs(parentId, labelText, colorSelectorIds) {
     newForm.appendChild(newLabel);
 
     var colorContainer = document.createElement("div");
-    if (colorSelectorIds.length > 1) {
+    // if (colorSelectorIds.length > 1) {
         colorContainer.className = "d-flex justify-content-between ms-4 me-4";
-    } else {
-        colorContainer.className = "d-flex justify-content-center";
-    }
+    // } else {
+    //     colorContainer.className = "d-flex justify-content-center";
+    // }
     
 
     for (var i = 0; i < colorSelectorIds.length; ++i) {
@@ -278,7 +280,7 @@ function addSwitchEventListeners() {
             // createSliders(parentId, "Ticks", "tickSlider", 0, 500, 10);
             createSliders(parentId, "Duration", "timeSlider", 1, 30, 1);
             
-            createColorInputs(parentId, "Snow Colors", ["colorSelector1"]);
+            createColorInputs(parentId, "Snow Colors", colorSelectorIds);
             selectedProfile = "snow";
             getSavedSettings(selectedProfile, function(profileSettings) {
                 updateInputs(profileSettings || defaultSnow, "snowSwitch", "checkOffSwitch");
