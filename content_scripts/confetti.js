@@ -102,8 +102,7 @@ async function steelWool(profileSettings) {
         angleValues[i] = ( -theta * radianToDegree ) - 90;
         // polar to cartesian: x = r * cos(theta) , y = r * sin(theta)
         // a circle in polar coordinates can be drawn by changing theta
-        // divide by width and height to turn it into a percent between 0 and 1
-        // add .5 to center on screen
+        // divide by width and height to turn it into a percent between 0 and 1 then add .5 to center on screen
         originXValues[i] = ( ( r * Math.cos(theta) ) / window.innerWidth ) + .5;
         originYValues[i] = ( ( r * Math.sin(theta) ) / window.innerHeight) + .5;
         let fadeOut = ( ( duration - i ) / duration );

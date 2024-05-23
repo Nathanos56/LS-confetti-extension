@@ -47,9 +47,9 @@ const defaultWool = {
     'spreadSlider': 10,
     'tickSlider': 90,
     'driftSlider': 0,
-    'colorSelector1': '#ff0000',
-    'colorSelector2': '#00ff00',
-    'colorSelector3': '#0000ff'
+    'colorSelector1': '#ffff00',
+    'colorSelector2': '#ffff00',
+    'colorSelector3': '#ffff00'
 }
 
 const applyButton = document.getElementById('applyButton');
@@ -127,7 +127,7 @@ window.onload = function() {
                         updateInputs(defaultVals, "confettiSwitch", "checkOffSwitch");
                         break;
                     case "woolSwitch":
-                        // updateInputs(defaultVals, "woolSwitch", "checkOffSwitch");
+                        updateInputs(defaultWool, "woolSwitch", "checkOffSwitch");
                         break;
                     case "fireworkSwitch":
                         updateInputs(defaultFireworks, "fireworkSwitch", "checkOffSwitch");
