@@ -7,6 +7,10 @@
 
 import confetti from 'canvas-confetti';
 
+function randomInRange(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
 function initialConfetti(profileSettings) {   
     const color1 = profileSettings['colorSelector1'] || '#f00';
     const color2 = profileSettings['colorSelector2'] || '#00f';
@@ -69,21 +73,28 @@ async function steelWool(profileSettings) {
     const revolutions = profileSettings['revolutionsSlider'] || 15;
     const r = profileSettings['radiusSlider'] || 100; // px
     const accuracy = profileSettings['accuracySlider'] || 360;
+    const size = profileSettings['particleSizeSlider'] || .75
+    const wind = profileSettings['driftSlider'] || 0;
+    const gravity = profileSettings['gravitySlider'] || 1;
+    const velocity = profileSettings['velocitySlider'] || 75
+    const color1 = profileSettings['colorSelector1'] || '#ffff00';
+    const color2 = profileSettings['colorSelector2'] || '#ffff00';
+    const color3 = profileSettings['colorSelector3'] || '#ffff00';
     
     const dTheta = ( 360 / accuracy ) * degreeToRadian;
     const duration = revolutions * accuracy;
 
     let settings = { 
-        velocity: profileSettings['velocitySlider'] || 75,
-        gravity: profileSettings['gravitySlider'] || 1,
+        velocity: velocity,
+        gravity: gravity,
         decay: .97,
-        scalar: profileSettings['particleSizeSlider'] || .75,
+        scalar: size,
         spread:  profileSettings['spreadSlider'] || 10,
         angle: 0,
         ticks:  profileSettings['tickSlider'] || 90,
-        zIndex: 0,
-        drift: profileSettings['driftSlider'] || 0,
-        colors: [profileSettings['colorSelector1'] || '#ff0', profileSettings['colorSelector2'] || '#ff0', profileSettings['colorSelector3'] || '#ff0'],
+        zIndex: 100,
+        drift: wind,
+        colors: [ color1, color2, color3 ],
         particleCount: profileSettings['particleSlider'] || 1, 
         origin: { x: 0, y: 0 }
     };
@@ -118,8 +129,14 @@ async function steelWool(profileSettings) {
             settings.angle = angleValues[count];
             settings.origin.x = originXValues[count];
             settings.origin.y = originYValues[count];
-            settings.decay = decayValues[count];
+            settings.decay = randomInRange( decayValues[count] * .95, decayValues[count] * 1.15);
             settings.colors.push(settings.colors.shift());
+            settings.zIndex = randomInRange(80, 150);
+            settings.scalar = randomInRange(size * .7, size * 1.3);
+            settings.drift = randomInRange(wind -1, wind + 1);
+            settings.gravity = randomInRange(gravity * .9, gravity * 1.4);
+            settings.velocity = randomInRange(velocity * .75, velocity * 1.5);
+            // settings.decay = decayValues[count];
             confetti(settings);
             ++count;
         }
@@ -136,10 +153,6 @@ function fireworks(profileSettings) {
 
     var duration = inputTime * 1000;
     var animationEnd = Date.now() + duration;
-
-    function randomInRange(min, max) {
-        return Math.random() * (max - min) + min;
-    }
 
     var interval = setInterval(function() {
         var timeLeft = animationEnd - Date.now();
@@ -174,10 +187,6 @@ function snow(profileSettings) {
         ticks: 200,
         colors: [profileSettings['colorSelector1'] || '#ffffff', profileSettings['colorSelector2'] ||  '#ffffff', profileSettings['colorSelector3'] ||  '#ffffff'],
         shapes: ['circle'],
-    }
-
-    function randomInRange(min, max) {
-        return Math.random() * (max - min) + min;
     }
 
     function frame() {
