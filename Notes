@@ -93,3 +93,8 @@ syntax of the color pickers
 // event.removeEventListener('click', handleClick);
 // event.target.click(); // perform default button action
 // event.addEventListener('click', handleClick);
+
+
+// function addDisabledClass(ignoreId) {
+//     const divs = document.querySelectorAll(`div[id$="options"]:not(#${ignoreId})`);
+// }
