@@ -1,7 +1,6 @@
 
 // toDo:
 // add css animations in the popup
-// get rid of profiles{}. flatten the tree
 // make steel wool follow the mouse
 
 
@@ -108,17 +107,29 @@ async function steelWool(profileSettings) {
     let originYValues = new Array(duration);
     let stepValues = new Array(duration);
     let decayValues = new Array(duration);
+    let zIndexValues = new Array(duration);
+    let scalarValues = new Array(duration);
+    let driftValues = new Array(duration);
+    let gravityValues = new Array(duration);
+    let velocityValues = new Array(duration);
     for ( let i = 0; i < duration; i++ ) {
         const theta = ( i * dTheta ) % twoPI;
         angleValues[i] = ( -theta * radianToDegree ) - 90;
-        // polar to cartesian: x = r * cos(theta) , y = r * sin(theta)
-        // a circle in polar coordinates can be drawn by changing theta
+        // polar to cartesian: x = r * cos(theta) , y = r * sin(theta) | a circle in polar coordinates can be drawn by changing theta
         // divide by width and height to turn it into a percent between 0 and 1 then add .5 to center on screen
         originXValues[i] = ( ( r * Math.cos(theta) ) / window.innerWidth ) + .5;
         originYValues[i] = ( ( r * Math.sin(theta) ) / window.innerHeight) + .5;
-        let fadeOut = ( ( duration - i ) / duration );
-        stepValues[i] = originalStep *  easeInCube(1 / fadeOut);                       // this accelerates the animation speed
-        decayValues[i] = Math.min( myDecay * easeInQuad(1 / fadeOut) / 1.2, myDecay);  // this too
+        const fadeOut = ( ( duration - i ) / duration );
+        zIndexValues[i] = randomInRange(80, 150);
+        scalarValues[i] = randomInRange(size * .7, size * 1.3);
+        driftValues[i] = randomInRange(wind -1, wind + 1);
+        gravityValues[i] = randomInRange(gravity * .9, gravity * 1.4);
+        velocityValues[i] = randomInRange(velocity * .75, velocity * 1.5);
+        // these accelerate the animation speed
+        stepValues[i] = Math.min( originalStep *  easeInCube(1 / fadeOut), 1000 );
+        const decayTemp = Math.min( myDecay * easeInQuad(1 / fadeOut) / 1.2, myDecay);
+        decayValues[i] = randomInRange( decayTemp * .95, decayTemp * 1.15);
+        
     }
 
     let count = 0;
@@ -129,14 +140,13 @@ async function steelWool(profileSettings) {
             settings.angle = angleValues[count];
             settings.origin.x = originXValues[count];
             settings.origin.y = originYValues[count];
-            settings.decay = randomInRange( decayValues[count] * .95, decayValues[count] * 1.15);
+            settings.decay = decayValues[count];
             settings.colors.push(settings.colors.shift());
-            settings.zIndex = randomInRange(80, 150);
-            settings.scalar = randomInRange(size * .7, size * 1.3);
-            settings.drift = randomInRange(wind -1, wind + 1);
-            settings.gravity = randomInRange(gravity * .9, gravity * 1.4);
-            settings.velocity = randomInRange(velocity * .75, velocity * 1.5);
-            // settings.decay = decayValues[count];
+            settings.zIndex = zIndexValues[count];
+            settings.scalar = scalarValues[count];
+            settings.drift = driftValues[count];
+            settings.gravity = gravityValues[count];
+            settings.velocity = velocityValues[count];
             confetti(settings);
             ++count;
         }
@@ -227,10 +237,8 @@ function getSelectedProfile() {
 }
 function getSettings(selectedProfile) {
     return new Promise((resolve, reject) => {
-        // gets the profiles object
-        chrome.storage.sync.get('profiles', function(data) {
-            let profiles = data.profiles || {};
-            resolve(profiles[selectedProfile] || {}); //returns profileSettings
+        chrome.storage.sync.get(selectedProfile, function(data) {
+            resolve(data[selectedProfile] || {}); //returns profileSettings
         });
     });
 }
@@ -252,7 +260,6 @@ window.onload = async function() {
     const checkOffEnabled = profileSettings["checkOffSwitch"] || false;
 
     const handleClick = async (event) => {
-        // console.log('%cbutton pressed. confettiType: ' + selectedProfile, 'color: green; font-weight: bold;');
         switch(selectedProfile) { // no need for default
             case "confetti":
                 initialConfetti(profileSettings);
@@ -271,13 +278,10 @@ window.onload = async function() {
 
     const attachClickListener = function() {
         let submitButtons = Array.from(document.querySelectorAll(LSSubmit));
-        // console.log('Submit buttons:', submitButtons);
         if (checkOffEnabled) { 
-            // console.log('check Off is Enabled');
             let buttons = document.querySelectorAll(LSCheckOff);
             let checkOffButtons = Array.from(buttons).filter(button => {
                 let childDivs = button.querySelectorAll('div');
-                // console.log('check Off button added');
                 return Array.from(childDivs).some(div => div.textContent.includes('Check Off'));
             });
             submitButtons = submitButtons.concat(checkOffButtons);
@@ -286,7 +290,6 @@ window.onload = async function() {
             if (!submitButton.hasClickListener) {
                 submitButton.addEventListener('click', handleClick);
                 submitButton.hasClickListener = true;
-                // console.log(submitButton + '%c: submit button listener attached', 'color: green; font-weight: bold;');
             }
         });
     };
@@ -303,8 +306,6 @@ window.onload = async function() {
     });
   
     observer.observe(document.body, { childList: true, attributes: true, characterData: true, subtree: true });
-  
-    // console.log('%cjs file loaded', 'color: green; font-weight: bold;');
 };
 
 

@@ -57,7 +57,6 @@ const resetButton = document.getElementById('resetButton');
 // const testButton = document.getElementById('testButton'); // can't use a test button without giving the extension access to every webpage
 
 let selectedProfile = null;
-let profiles = {};
 
 window.onload = function() {
     // Get the selected profile name
@@ -77,9 +76,6 @@ window.onload = function() {
 
     // profiles are so poeple can adjust the defaults and save their work
     applyButton.addEventListener('click', (event) => {
-        chrome.storage.sync.get('profiles', function(data) { 
-            profiles = data.profiles || { };
-        
             let profile = {}; // current profile settings
 
             // switches
@@ -101,27 +97,21 @@ window.onload = function() {
                 profile[colorInput.id] = colorInput.value;
             });
 
-            // Save the profile to the profiles object
-            profiles[selectedProfile] = profile;
-
-            // Save the profiles object to chrome storage
-            chrome.storage.sync.set({profiles: profiles}, function() {
-                console.log('Profiles saved');
+            // Save the profile object to chrome storage
+            chrome.storage.sync.set({[selectedProfile]: profile}, function() {
+                console.log('Profile saved');
             });
 
             // tell confetti.js which profile to use
             chrome.storage.sync.set({selectedProfile: selectedProfile}, function() {
                 console.log('Selected profile is set to ' + selectedProfile);
             });
-        });
     }); 
 
     resetButton.addEventListener('click', (event) => {
-        // console.log("reset button pressed");
         const switches = document.querySelectorAll('[role="switch"]:not(#checkOffSwitch)');
         switches.forEach(function(mySwitch) {
             if (mySwitch.checked) {
-                // console.log("the switch being reset: ", mySwitch.id);
                 switch(mySwitch.id) {
                     case "confettiSwitch":
                         updateInputs(defaultVals, "confettiSwitch", "checkOffSwitch");
@@ -142,12 +132,11 @@ window.onload = function() {
 }
 
 function getSavedSettings(profileName, callback) {
-    // Get the profiles object
-    chrome.storage.sync.get('profiles', function(data) {
-        profiles = data.profiles;
-        if (profiles) {
-            // console.log('profiles:', profiles);
-            callback(profiles[profileName]);
+    // Get the profile directly
+    chrome.storage.sync.get(profileName, function(data) {
+        let profile = data[profileName];
+        if (profile) {
+            callback(profile);
         } else {
             callback(null);
         }
@@ -160,7 +149,6 @@ function updateInputs(settings, targetSwitch, checkOffSwitch) {
     // show switch states
     const switches = document.querySelectorAll(`[role="switch"]:not(#${checkOffSwitch}):not(#${targetSwitch})`);
     switches.forEach(function(mySwitch) {
-        // console.log("switch.id:", mySwitch.id);
         mySwitch.checked = settings[mySwitch.id] || false;
         mySwitch.dispatchEvent(new Event('change'));
     });
@@ -179,7 +167,6 @@ function updateInputs(settings, targetSwitch, checkOffSwitch) {
     // show color input states
     var colorInputs = document.querySelectorAll('.form-control-color');
     colorInputs.forEach(function(colorInput) {
-        // console.log('%csettings[colorInput.id]' + settings[colorInput.id], 'color: green; font-weight: bold;');
         colorInput.value = (settings && settings[colorInput.id]) || defaultVals[colorInput.id] || '#808080';
     });
 };
@@ -310,7 +297,7 @@ function addSwitchEventListeners() {
             createSliders(parentId, "Wind", "driftSlider", -5, 5, .5);
             createSliders(parentId, "Ticks", "tickSlider", 20, 200, 10);
             createSliders(parentId, "Particle Size", "particleSizeSlider", .3, 2, .05);
-            createSliders(parentId, "Revolutions", "revolutionsSlider", 5, 50, 2);
+            createSliders(parentId, "Revolutions", "revolutionsSlider", 4, 50, 1);
             createSliders(parentId, "Radius", "radiusSlider", 50, 500, 10);
             createSliders(parentId, "Accuracy", "accuracySlider", 50, 500, 10);
 
