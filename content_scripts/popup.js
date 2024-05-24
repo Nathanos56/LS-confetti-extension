@@ -19,8 +19,8 @@ const defaultVals = {
     "colorSelector3": "#00ff00"
 }
 const defaultSnow = {
-    "timeSlider": 5,
     "velocitySlider": 0,
+    "timeSlider": 5,
     "particleSlider": 1,
     "colorSelector1": '#ffffff',
     "colorSelector2": '#ffffff',
@@ -159,14 +159,14 @@ function updateInputs(settings, ignoreSwitch, checkOffSwitch) {
         slider.oninput = function() {
             label.textContent = this.value;
         }
-        slider.value = settings[slider.id] || defaultVals[slider.id] || 0;
+        slider.value = settings[slider.id] || 0;
         slider.dispatchEvent(new Event('input'));
     });
 
     // show color input states
     var colorInputs = document.querySelectorAll('.form-control-color');
     colorInputs.forEach(function(colorInput) {
-        colorInput.value = (settings && settings[colorInput.id]) || defaultVals[colorInput.id] || '#808080';
+        colorInput.value = (settings && settings[colorInput.id]) || '#808080';
     });
 };
 
@@ -243,9 +243,6 @@ function deleteSwitchSettings(parentId) {
     while (parent.firstChild) { parent.removeChild(parent.firstChild) }
 }
 
-// function addDisabledClass(ignoreId) {
-//     const divs = document.querySelectorAll(`div[id$="options"]:not(#${ignoreId})`);
-// }
 
 function addSwitchEventListeners() {
     const snowSwitch = document.getElementById('snowSwitch');
@@ -258,7 +255,7 @@ function addSwitchEventListeners() {
         const parentId = "snowOptions";
         if(event.target.checked) {
             createSliders(parentId, "Particle Count", "particleSlider", 1, 10, 1);
-            createSliders(parentId, "Initial Velocity", "velocitySlider", -10, 10, 1);
+            createSliders(parentId, "Initial Velocity", "velocitySlider", 0, 200, 1);
             createSliders(parentId, "Duration", "timeSlider", 1, 30, 1);
             
             createColorInputs(parentId, "Snow Colors", colorSelectorIds);
@@ -331,6 +328,3 @@ function addSwitchEventListeners() {
         } else { deleteSwitchSettings(parentId) };
     });
 }
-
-
-
