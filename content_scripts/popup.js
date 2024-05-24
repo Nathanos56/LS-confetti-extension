@@ -182,7 +182,7 @@ function createSliders(parentId, labelText, sliderId, min, max, step) {
     var labelContainer = document.createElement("div");
 
     var newLabel = document.createElement("label");
-    newLabel.className = "form-label";
+    newLabel.className = "form-label unselectable";
     newLabel.htmlFor = sliderId;
     newLabel.textContent = labelText;
 
@@ -216,7 +216,7 @@ function createColorInputs(parentId, labelText, colorSelectorIds) {
 
     var newForm = document.createElement("form");
     var newLabel = document.createElement("label");
-    newLabel.className = "form-label";
+    newLabel.className = "form-label unselectable";
     newLabel.htmlFor = colorSelectorIds[0];
     newLabel.textContent = labelText;
 
