@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Learning Suite Confetti",
-  "version": "1.9",
-  "description": "Throws confetti when you submit assignments on learning suite 🎊",
+  "version": "1.9.1",
+  "description": "Celebrate Every Submission with LS Confetti! 🎉",
   "action": {
     "default_popup": "popup.bundle.html",
     "default_icon": {
