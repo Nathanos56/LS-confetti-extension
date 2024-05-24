@@ -307,14 +307,3 @@ window.onload = async function() {
   
     observer.observe(document.body, { childList: true, attributes: true, characterData: true, subtree: true });
 };
-
-
-
-
-
-// this was a test for submit buttons on all websites:
-// const submitButtons = document.querySelectorAll('input[type="submit"], button[type="submit"], button[data-v-625658]');
-// event.preventDefault();
-// event.removeEventListener('click', handleClick);
-// event.target.click(); // perform default button action
-// event.addEventListener('click', handleClick);

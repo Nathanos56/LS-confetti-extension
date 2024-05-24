@@ -143,11 +143,10 @@ function getSavedSettings(profileName, callback) {
     }); 
 }
 
-
 // this also resets the other switches
-function updateInputs(settings, targetSwitch, checkOffSwitch) {
+function updateInputs(settings, ignoreSwitch, checkOffSwitch) {
     // show switch states
-    const switches = document.querySelectorAll(`[role="switch"]:not(#${checkOffSwitch}):not(#${targetSwitch})`);
+    const switches = document.querySelectorAll(`[role="switch"]:not(#${checkOffSwitch}):not(#${ignoreSwitch})`);
     switches.forEach(function(mySwitch) {
         mySwitch.checked = settings[mySwitch.id] || false;
         mySwitch.dispatchEvent(new Event('change'));
@@ -170,8 +169,6 @@ function updateInputs(settings, targetSwitch, checkOffSwitch) {
         colorInput.value = (settings && settings[colorInput.id]) || defaultVals[colorInput.id] || '#808080';
     });
 };
-
-
 
 
 
@@ -246,7 +243,9 @@ function deleteSwitchSettings(parentId) {
     while (parent.firstChild) { parent.removeChild(parent.firstChild) }
 }
 
-
+// function addDisabledClass(ignoreId) {
+//     const divs = document.querySelectorAll(`div[id$="options"]:not(#${ignoreId})`);
+// }
 
 function addSwitchEventListeners() {
     const snowSwitch = document.getElementById('snowSwitch');
@@ -335,11 +334,3 @@ function addSwitchEventListeners() {
 
 
 
-// show when sliders are disabled
-
-// function enableSliders(isChecked) {
-//     var sliders = document.getElementsByClassName('form-range');
-//     for (var i = 0; i < sliders.length; i++) {
-//         sliders[i].disabled = !isChecked;
-//     }
-// }
