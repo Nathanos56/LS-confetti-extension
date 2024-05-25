@@ -1,6 +1,6 @@
 # Learning Suite Confetti
 
-A Chrome extension that throws confetti when the user submits assignments on BYU's Learning Suite.   
+A Chrome extension that throws confetti when users submit assignments on BYU's Learning Suite.   
 https://chromewebstore.google.com/detail/learning-suite-confetti/jppenedngcfcfjacdjaelklonikilfjg
   <br />
 <br />
