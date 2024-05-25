@@ -7,7 +7,7 @@ https://chromewebstore.google.com/detail/learning-suite-confetti/jppenedngcfcfja
 Transform the mundane task of assignment submission into a moment of accomplishment and joy by throwing virtual confetti on the screen! Reward your hard work with a customizable spectacle of effects. Choose your favorite – from serene snowflakes to exuberant steel wool sparks – and make every submission a reason to celebrate!
 <br />
 <br />
-Feel free to fork the repository to add your own effects or bring the spark of joy to other browsers! - https://github.com/nthnlwilson/LS-confetti-extension
+Feel free to fork the repository to add your own effects or perhaps to bring the spark of joy to other browsers!
   <br />
 <br />
 Confetti icon by Jemis Mali - https://iconscout.com/contributors/jemismali   
